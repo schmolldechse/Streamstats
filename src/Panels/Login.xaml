@@ -1,0 +1,176 @@
+﻿<Window x:Class="Streamstats.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Streamstats"
+        mc:Ignorable="d"
+        Title="Login"
+        MinHeight="850"
+        MinWidth="450" 
+        Height="850"
+        Width="450"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Background>
+        <SolidColorBrush Color="#030713"></SolidColorBrush>
+    </Window.Background>
+    
+    <Window.Resources>
+        <SolidColorBrush x:Key="Background" Color="FloralWhite" />
+
+        <SolidColorBrush x:Key="TextColor" Color="Black" />
+        <SolidColorBrush x:Key="BorderColor" Color="#333742" />
+
+        <!-- Inputfield -->
+        <Style x:Key="tokenStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="{DynamicResource Background}" />
+            <Setter Property="BorderThickness" Value="3" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            <Setter Property="Padding" Value="5.2 3" />
+            <Setter Property="FontWeight" Value="400" />
+            <Setter Property="FontFamily" Value="Poppins" />
+            <Setter Property="Cursor" Value="IBeam" />
+            <Setter Property="Foreground" Value="{DynamicResource TextColor}" />
+            <Setter Property="Height" Value="Auto" />
+            <Setter Property="MaxHeight" Value="40" />
+            <Setter Property="Width" Value="Auto" />
+            <Setter Property="AllowDrop" Value="True" />
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="txtBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"
+                                MaxHeight="{TemplateBinding MaxHeight}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                SnapsToDevicePixels="True">
+                            <Grid Margin="{TemplateBinding Padding}">
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                      Focusable="False"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      Margin="-2 3"/>
+                                <Label x:Name="WaterMarkerLabel"
+                                       Content="{TemplateBinding Tag}"
+                                       FontWeight="{TemplateBinding FontWeight}"
+                                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                       HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                       Visibility="Collapsed"
+                                       Foreground="{TemplateBinding Foreground}" 
+                                       Padding="{TemplateBinding Padding}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="Text" Value="" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Visibility" TargetName="WaterMarkerLabel" Value="Visible" />
+                            </MultiTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Login Button -->
+        <Style x:Key="login" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#A656E9" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Width="150" Height="40"
+                                CornerRadius="20"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#7F3F9E" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="6*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Vertical"
+                    Margin="0 35 0 0">
+
+            <Image Source="../../Images/Artboard-1.ico" 
+                   Height="100"
+                   Width="100"/>
+
+            <TextBlock Text="Streamstats"
+                       Foreground="FloralWhite"
+                       FontSize="32"
+                       FontWeight="Medium" 
+                       HorizontalAlignment="Center" />
+
+            <TextBlock Text="Enter your StreamElements JWT Token and your Twitch Key to continue"
+                       Foreground="LightGray"
+                       FontSize="12"
+                       FontWeight="Medium"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center" 
+                       Margin="50 3 50 0"/>
+
+            <TextBlock Text="StreamElements JWT Token"
+                       Foreground="DarkGray"
+                       FontSize="12"
+                       FontWeight="Medium"
+                       Margin="35 50 35 0" />
+
+            <TextBox x:Name="textBox_jwtToken" 
+                     Style="{DynamicResource tokenStyle}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Top"
+                     Margin="30 7 30 0"/>
+
+            <TextBlock Text="Twitch Token"
+                       Foreground="DarkGray"
+                       FontSize="12"
+                       FontWeight="Medium"
+                       Margin="35 30 35 0" />
+
+            <TextBox x:Name="textBox_twitchToken" 
+                     Style="{DynamicResource tokenStyle}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Top"
+                     Margin="30 7 30 0"/>
+
+            <Button x:Name="button_Login"
+                    BorderThickness="0"
+                    Content="Login"
+                    Foreground="FloralWhite"
+                    FontSize="12"
+                    FontWeight="Bold"
+                    Cursor="Hand"
+                    Margin="50 60 50 0"
+                    Style="{DynamicResource login}"/>
+        </StackPanel>
+    </Grid>
+</Window>
