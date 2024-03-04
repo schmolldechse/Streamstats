@@ -10,6 +10,7 @@
         MinWidth="450" 
         Height="850"
         Width="450"
+        SizeToContent="Height"
         Background="#030713">
 
     <Window.Resources>
@@ -47,7 +48,7 @@
         </Style>
 
         <BorderGapMaskConverter x:Key="BorderGapMaskConverter"/>
-        <Style x:Key="test" TargetType="{x:Type GroupBox}">
+        <Style x:Key="groupBoxStyle" TargetType="{x:Type GroupBox}">
             <Setter Property="BorderBrush" Value="#1E222E"/>
             <Setter Property="BorderThickness" Value="0.4"/>
             <Setter Property="Template">
@@ -82,6 +83,35 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="messageTextBlock" TargetType="{x:Type TextBox}">
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="Padding" Value="-2 0 0 0" />
+            <Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="False" />
+                        <Condition Property="IsFocused" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TextBox}">
+                                <TextBlock Text="{TemplateBinding Text}" 
+                             FontSize="{TemplateBinding FontSize}"
+                             FontStyle="{TemplateBinding FontStyle}"
+                             FontFamily="{TemplateBinding FontFamily}"
+                             FontWeight="{TemplateBinding FontWeight}"
+                             TextWrapping="{TemplateBinding TextWrapping}"
+                             Foreground="{DynamicResource NormalText}"
+                             Padding="0,0,0,0"
+                                       />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid Background="#030713" Margin="4">
@@ -97,39 +127,60 @@
             <Button VerticalAlignment="Top" HorizontalAlignment="Left" >lol</Button>
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel x:Name="donation_Panel" Margin="10 5 10 5">
 
-                <GroupBox Style="{DynamicResource test}">
+                <GroupBox Style="{DynamicResource groupBoxStyle}">
                     <StackPanel>
-
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <TextBlock Margin="5 12 0 0">
-                                <Border BorderBrush="#212936"
-                                    Background="#212936"
-                                    CornerRadius="10">
-                                    <TextBlock Text="tedddddst€" Foreground="FloralWhite" Margin="5 5 5 5"/>
-                                </Border>
-                            </TextBlock>
+                            <StackPanel Margin="0 12 0 5" Grid.Row="0" Orientation="Horizontal">
+                                <TextBlock Margin="5 0 0 0">
+                                    <Border BorderBrush="#212936"
+                                            Background="#212936"
+                                            CornerRadius="10">
+                                        <TextBlock Text="tedddddst €" 
+                                                   Foreground="FloralWhite" 
+                                                   Margin="15 5 15 5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect Color="White" Direction="0" ShadowDepth="0" Opacity="1" />
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                    </Border>
+                                </TextBlock>
 
-                            <TextBlock Margin="90 12 0 0">
-                                <Border BorderBrush="#212936"
-                                    Background="#212936"
-                                    CornerRadius="10">
-                                    <TextBlock Text="tedddddst€" Foreground="FloralWhite" Margin="15 5 15 5"/>
-                                </Border>
-                            </TextBlock>
+                                <TextBlock Margin="10 4 0 0"
+                                           Text="Username123"
+                                           Foreground="#5BBBA5"
+                                           FontWeight="Bold">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="#5BBBA5" Direction="0" ShadowDepth="0" Opacity="1" />
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                            </StackPanel>
+                           
+                            <TextBlock Margin="0 16 10 0"  Text="123"
+                                       Foreground="Gray"
+                                       FontWeight="Medium" 
+                                       HorizontalAlignment="Right" 
+                                       VerticalAlignment="Top" />
+
+                            <WrapPanel Grid.Row="1"
+                                       Margin="10 0 10 5">
+                                <TextBox TextWrapping="Wrap"
+                                         Text="Lorem ipsum dolor sit amet, coetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur sansetetur sadipscing elitr, sed diam nonumy eirmod tempor inviduie consequat https://google.com"
+                                         Foreground="FloralWhite" 
+                                         Background="#030713"
+                                         BorderThickness="0"/>
+                            </WrapPanel>
                         </Grid>
                     </StackPanel>
                 </GroupBox>
 
-                <Image Source="../../Images/S.ico" />
-                
             </StackPanel>
         </ScrollViewer>
 

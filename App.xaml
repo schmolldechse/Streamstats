@@ -4,6 +4,5 @@
              xmlns:local="clr-namespace:Streamstats"
              StartupUri="src/Panels/Login.xaml">
     <Application.Resources>
-         
     </Application.Resources>
 </Application>

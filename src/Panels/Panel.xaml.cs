@@ -32,26 +32,13 @@ namespace Streamstats
             do
             {
                 if (App.se_service.FETCHED_DONATIONS) break;
-            } while (!App.se_service.FETCHED_DONATIONS) ;
+            } while (!App.se_service.FETCHED_DONATIONS);
 
             foreach (Donation donation in App.se_service.donations)
             {
-                /**
-                StackPanel lol = new StackPanel();
-                lol.Children.Add(new Button {  });
-                lol.Children.Add(new Button { Content = "Button 2" });
-                lol.Children.Add(new Button { Content = "Button 3" });
-
-                GroupBox group = new GroupBox();
-                group.Content = lol;
-                group.Style = (Style) FindResource("test");
-                
-                donation_Panel.Children.Insert(0, group);
-                */
-
-                //GroupBox groupBox = new Donation_GroupBox(donation).create();
+                GroupBox groupBox = new Donation_GroupBox(donation).create();
                 //donation_Panel.Children.Add(groupBox);
-                //donation_Panel.Children.Insert(0, groupBox);
+                donation_Panel.Children.Insert(0, groupBox);
             }
 
             App.se_service.client.On("event", (data) =>
