@@ -34,6 +34,7 @@ namespace Streamstats
             {
                 if (App.se_service.FETCHED_DONATIONS) break;
             } while (!App.se_service.FETCHED_DONATIONS);
+            App.se_service.donations.Sort((donation1, donation2) => donation1.createdAt.CompareTo(donation2.createdAt));
 
             foreach (Donation donation in App.se_service.donations)
             {
