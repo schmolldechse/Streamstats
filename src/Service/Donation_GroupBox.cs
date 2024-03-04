@@ -18,6 +18,8 @@ namespace Streamstats.src.Service
 
         private DispatcherTimer timer;
 
+        private TextBlock? timeAgoBlock;
+
         public Donation_GroupBox(Donation donation)
         {
             this._donation = donation;
@@ -26,8 +28,9 @@ namespace Streamstats.src.Service
             this.timer.Interval = TimeSpan.FromSeconds(1);
             this.timer.Tick += (sender, e) =>
             {
-
+                if (timeAgoBlock != null) timeAgoBlock.Text = timeDifference(_donation.createdAt);
             };
+            this.timer.Start();
         }
 
         public GroupBox create()
@@ -56,6 +59,7 @@ namespace Streamstats.src.Service
 
             TextBlock amount_Inner = new TextBlock();
             amount_Inner.Text = _donation.data.amount + " " + currency(_donation.data.currency);
+            amount_Inner.FontWeight = FontWeights.Bold;
             amount_Inner.Foreground = Brushes.FloralWhite;
             amount_Inner.Margin = new Thickness(15, 5, 15, 5);
             amount_Inner.Effect = new DropShadowEffect() { Color = Colors.White, Direction = 0, ShadowDepth = 0, Opacity = 1 };
@@ -83,6 +87,8 @@ namespace Streamstats.src.Service
             timeAgo.FontWeight = FontWeights.Medium;
             timeAgo.HorizontalAlignment = HorizontalAlignment.Right;
             timeAgo.VerticalAlignment = VerticalAlignment.Top;
+
+            timeAgoBlock = timeAgo;
             //Grid.SetRow(timeAgo, 0);
 
             //MESSAGE PANEL
@@ -105,6 +111,7 @@ namespace Streamstats.src.Service
                     //TODO: hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
 
                     paragraph.Inlines.Add(hyperlink);
+                    paragraph.Inlines.Add(new Run(" "));
                 } 
                 else
                 {
@@ -134,12 +141,6 @@ namespace Streamstats.src.Service
             groupBox.Style = (Style) App.Current.FindResource("groupBoxStyle");
 
             return groupBox;
-        }
-
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
         }
 
         private string currency(string currencyCode)

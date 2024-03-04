@@ -51,12 +51,18 @@ namespace Streamstats
 
         public void handleIncomingDonation(string data)
         {
-            JArray jArray = JArray.Parse(data);
-            JObject donation = (JObject)jArray.First;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                JArray jArray = JArray.Parse(data);
+                JObject donation = (JObject)jArray.First;
 
-            Donation fetched = App.se_service.fetchDonation(donation);
-            App.se_service.donations.Insert(0, fetched);
-            //TODO: add to panel
+                Donation fetched = App.se_service.fetchDonation(donation);
+                App.se_service.donations.Insert(0, fetched);
+
+                GroupBox groupBox = new Donation_GroupBox(fetched).create();
+                donation_Panel.Children.Insert(0, groupBox);
+            });
+            
         }
     }
 }
