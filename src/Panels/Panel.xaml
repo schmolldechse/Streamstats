@@ -47,43 +47,6 @@
             </Setter>
         </Style>
 
-        <BorderGapMaskConverter x:Key="BorderGapMaskConverter"/>
-        <Style x:Key="groupBoxStyle" TargetType="{x:Type GroupBox}">
-            <Setter Property="BorderBrush" Value="#1E222E"/>
-            <Setter Property="BorderThickness" Value="0.4"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type GroupBox}">
-                        <Grid SnapsToDevicePixels="true">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="6"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="6"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="6"/>
-                            </Grid.RowDefinitions>
-                            <Border BorderBrush="#1E222E" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Grid.Column="0" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3"/>
-                            <Border BorderBrush="#1E222E" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="4" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3">
-
-                                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
-                                    <Border BorderBrush="#1E222E" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2"/>
-                                </Border>
-                            </Border>
-                            <Border x:Name="Header" Grid.Column="1" Padding="3,1,3,0" Grid.Row="0" Grid.RowSpan="2">
-                                <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                            </Border>
-                            <ContentPresenter Grid.ColumnSpan="2" Grid.Column="1" Margin="{TemplateBinding Padding}" Grid.Row="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <Style x:Key="messageTextBlock" TargetType="{x:Type TextBox}">
             <Setter Property="IsReadOnly" Value="True" />
             <Setter Property="IsTabStop" Value="False" />
@@ -129,57 +92,6 @@
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel x:Name="donation_Panel" Margin="10 5 10 5">
-
-                <GroupBox Style="{DynamicResource groupBoxStyle}">
-                    <StackPanel>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <StackPanel Margin="0 12 0 5" Grid.Row="0" Orientation="Horizontal">
-                                <TextBlock Margin="5 0 0 0">
-                                    <Border BorderBrush="#212936"
-                                            Background="#212936"
-                                            CornerRadius="10">
-                                        <TextBlock Text="tedddddst €" 
-                                                   Foreground="FloralWhite" 
-                                                   Margin="15 5 15 5">
-                                            <TextBlock.Effect>
-                                                <DropShadowEffect Color="White" Direction="0" ShadowDepth="0" Opacity="1" />
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                    </Border>
-                                </TextBlock>
-
-                                <TextBlock Margin="10 4 0 0"
-                                           Text="Username123"
-                                           Foreground="#5BBBA5"
-                                           FontWeight="Bold">
-                                    <TextBlock.Effect>
-                                        <DropShadowEffect Color="#5BBBA5" Direction="0" ShadowDepth="0" Opacity="1" />
-                                    </TextBlock.Effect>
-                                </TextBlock>
-                            </StackPanel>
-                           
-                            <TextBlock Margin="0 16 10 0"  Text="123"
-                                       Foreground="Gray"
-                                       FontWeight="Medium" 
-                                       HorizontalAlignment="Right" 
-                                       VerticalAlignment="Top" />
-
-                            <WrapPanel Grid.Row="1"
-                                       Margin="10 0 10 5">
-                                <TextBox TextWrapping="Wrap"
-                                         Text="Lorem ipsum dolor sit amet, coetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur saetetur sansetetur sadipscing elitr, sed diam nonumy eirmod tempor inviduie consequat https://google.com"
-                                         Foreground="FloralWhite" 
-                                         Background="#030713"
-                                         BorderThickness="0"/>
-                            </WrapPanel>
-                        </Grid>
-                    </StackPanel>
-                </GroupBox>
 
             </StackPanel>
         </ScrollViewer>

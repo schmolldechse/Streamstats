@@ -27,7 +27,6 @@ namespace Streamstats.src.Service.Streamelements
         public StreamelementsService()
         {
             donations = new List<Donation>();
-            donations.Sort((donation1, donation2) => donation1.createdAt.CompareTo(donation2.createdAt));
 
             CONNECTED = false;
             FETCHED_DONATIONS = false;

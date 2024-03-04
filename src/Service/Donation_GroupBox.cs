@@ -9,7 +9,7 @@ using System.Windows.Threading;
 
 namespace Streamstats.src.Service
 {
-    public class Donation_GroupBox : GroupBox
+    public class Donation_GroupBox
     {
 
         private Donation _donation;
@@ -107,11 +107,10 @@ namespace Streamstats.src.Service
 
             GroupBox groupBox = new GroupBox();
             groupBox.Content = stackPanel;
-            //TODO
-            //groupBox.Style = (Style) App.Current.FindResource("groupBoxStyle");
-            //groupBox.Style = (Style)Application.Current.Resources["groupBoxStyle"];
+            groupBox.Margin = new Thickness(0, 0, 0, 10);
+            groupBox.Style = (Style) App.Current.FindResource("groupBoxStyle");
 
-            return this;
+            return groupBox;
         }
 
         private string currency(string currencyCode)
