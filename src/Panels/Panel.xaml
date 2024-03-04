@@ -6,11 +6,10 @@
         xmlns:local="clr-namespace:Streamstats"
         mc:Ignorable="d"
         Title="Panel" 
-        MinHeight="850"
-        MinWidth="450" 
-        Height="850"
+        MinHeight="600"
+        MinWidth="400" 
+        Height="700"
         Width="450"
-        SizeToContent="Height"
         Background="#030713">
 
     <Window.Resources>
@@ -22,7 +21,27 @@
                     <ControlTemplate TargetType="ScrollBar">
                         <Grid>
                             <Border Background="{TemplateBinding Background}" CornerRadius="3" />
-                            <Track Grid.Row="2" x:Name="PART_Track" IsDirectionReversed="True">
+                            <Track Grid.Row="1" x:Name="PART_Track_1" IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
+                                </Track.DecreaseRepeatButton>
+
+                                <Track.Thumb>
+                                    <Thumb Background="#A656E9" Width="8">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="5"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.LineDownCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+
+                            <Track Grid.Row="3" x:Name="PART_Track_2" IsDirectionReversed="True">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
                                 </Track.DecreaseRepeatButton>
@@ -75,32 +94,70 @@
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="login" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#A656E9" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Width="150" Height="40"
+                        CornerRadius="20"
+                        Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                      HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#7F3F9E" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
-    <Grid Background="#030713" Margin="4">
+    <Grid Background="#030713" Margin="4 4 4 0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" /> 
+            <RowDefinition Height="3" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="top_ControlPanel" Orientation="Horizontal" Grid.Row="0">
-            <Button VerticalAlignment="Top" HorizontalAlignment="Left" >lol</Button>
+        <StackPanel x:Name="top_ControlPanel" 
+                    Orientation="Horizontal" 
+                    Grid.Row="0">
+            <Button VerticalAlignment="Top" 
+                    HorizontalAlignment="Left" >lol</Button>
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel x:Name="donation_Panel" Margin="10 5 10 5">
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Disabled"
+                      ScrollChanged="DonationPanel_ScrollChanged"
+                      x:Name="scrollViewer_donationPanel">
+            <StackPanel x:Name="donation_Panel" 
+                        Margin="7 5 7 5">
 
+                <!-- groupboxes being added via code -->
+                
             </StackPanel>
         </ScrollViewer>
 
-        <GridSplitter Grid.Row="2" Height="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#333742" />
+        <GridSplitter Grid.Row="2" 
+                      Height="3" 
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Center" 
+                      Background="#333742" 
+                      />
 
-        <ScrollViewer x:Name="subscriber_Panel" Grid.Row="3" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                <!--
+        <ScrollViewer Grid.Row="3" 
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel x:Name="subsriber_panel">
                 <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
                 <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
                 <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
@@ -113,12 +170,16 @@
                 <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
                 <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
                 <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                -->
+                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
+                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
+                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
             </StackPanel>
         </ScrollViewer>
 
-        <StackPanel x:Name="top_Donation" Orientation="Horizontal" Grid.Row="4">
-            <!-- <Button VerticalAlignment="Top" HorizontalAlignment="Left" >lol</Button> -->
-        </StackPanel>
+        <StackPanel x:Name="top_Donation" 
+                Orientation="Vertical"
+                Grid.Row="4">
+            
+        </StackPanel> 
     </Grid>
 </Window>

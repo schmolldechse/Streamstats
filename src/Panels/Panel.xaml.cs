@@ -23,10 +23,14 @@ namespace Streamstats
     /// </summary>
     public partial class Panel : Window
     {
+
+        private GroupBox topDonation_GroupBox;
+
         public Panel()
         {
             InitializeComponent();
 
+            //StreamElements
             App.httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {App.config.jwtToken}");
             if (App.se_service.CONNECTED) App.se_service.fetchLatestTips();
 
@@ -38,8 +42,7 @@ namespace Streamstats
 
             foreach (Donation donation in App.se_service.donations)
             {
-                GroupBox groupBox = new Donation_GroupBox(donation).create();
-                //donation_Panel.Children.Add(groupBox);
+                GroupBox groupBox = new Donation_GroupBox(donation, Donation_GroupBox.Type.NORMAL).create();
                 donation_Panel.Children.Insert(0, groupBox);
             }
 
@@ -58,12 +61,24 @@ namespace Streamstats
                 JObject donation = (JObject)jArray.First;
 
                 Donation fetched = App.se_service.fetchDonation(donation);
-                App.se_service.donations.Insert(0, fetched);
+                App.se_service.donations.Add(fetched);
 
-                GroupBox groupBox = new Donation_GroupBox(fetched).create();
+                GroupBox groupBox = new Donation_GroupBox(fetched, Donation_GroupBox.Type.NORMAL).create();
                 donation_Panel.Children.Insert(0, groupBox);
+
+                if (fetched.data.amount >= highest().data.amount)
+                {
+                    top_Donation.Children.Clear();
+                    top_Donation.Children.Insert(0, new Donation_GroupBox(fetched, Donation_GroupBox.Type.HIGHEST).create());
+                }
+
+                App.se_service.donations.Add(fetched);
             });
-            
+        }
+
+        private Donation highest()
+        {
+            return App.se_service.donations.OrderByDescending(donation => donation.data.amount).FirstOrDefault();
         }
     }
 }

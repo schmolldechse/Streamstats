@@ -31,6 +31,8 @@ namespace Streamstats
 
         private void Button_Login(object sender, RoutedEventArgs e)
         {
+            if (!button_Login.IsEnabled) return;
+
             if (textBox_jwtToken.Text.Length > 0 
                 && textBox_twitchToken.Text.Length > 0)
             {
@@ -39,6 +41,8 @@ namespace Streamstats
                 App.config.save();
 
                 connect();
+
+                button_Login.IsEnabled = false;
             }
             else
             {
@@ -53,6 +57,7 @@ namespace Streamstats
             {
                 if (trys >= 5)
                 {
+                    button_Login.IsEnabled = true;
                     Console.WriteLine($"Stopped connection after {trys} attemptions");
                     return;
                 }

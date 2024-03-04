@@ -20,9 +20,15 @@ namespace Streamstats.src.Service
 
         private TextBlock? timeAgoBlock;
 
-        public Donation_GroupBox(Donation donation)
+        private Type type;
+
+        private Color gold = Color.FromRgb(90, 83, 54);
+        private Color gray = Color.FromRgb(33, 41, 54);
+
+        public Donation_GroupBox(Donation donation, Type type)
         {
             this._donation = donation;
+            this.type = type;
 
             this.timer = new DispatcherTimer();
             this.timer.Interval = TimeSpan.FromSeconds(1);
@@ -53,8 +59,8 @@ namespace Streamstats.src.Service
             amount_Outer.Margin = new Thickness(5, 0, 0, 0);
 
             Border amount_Border = new Border();
-            amount_Border.BorderBrush = new SolidColorBrush(Color.FromRgb(33, 41, 54));
-            amount_Border.Background = new SolidColorBrush(Color.FromRgb(33, 41, 54));
+            amount_Border.BorderBrush = new SolidColorBrush(type == Type.HIGHEST ? gold : gray);
+            amount_Border.Background = new SolidColorBrush(type == Type.HIGHEST ? gold : gray);
             amount_Border.CornerRadius = new CornerRadius(10);
 
             TextBlock amount_Inner = new TextBlock();
@@ -137,8 +143,8 @@ namespace Streamstats.src.Service
 
             GroupBox groupBox = new GroupBox();
             groupBox.Content = stackPanel;
-            groupBox.Margin = new Thickness(0, 0, 0, 10);
-            groupBox.Style = (Style) App.Current.FindResource("groupBoxStyle");
+            groupBox.Margin = new Thickness((type == Type.NORMAL ? 0 : 7), 0, (type == Type.NORMAL ? 0 : 10), ( type == Type.NORMAL ? 10 : 6 ) );
+            groupBox.Style = (Style) App.Current.FindResource( type == Type.NORMAL ? "donation" : "highestDonation" );
 
             return groupBox;
         }
@@ -170,6 +176,12 @@ namespace Streamstats.src.Service
             {
                 return $"{(int)difference.TotalDays} d";
             }
+        }
+
+        public enum Type
+        {
+            NORMAL,
+            HIGHEST,
         }
     }
 }
