@@ -1,10 +1,12 @@
 ﻿using Streamstats.src.Service.Streamelements;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 
 namespace Streamstats.src.Service
@@ -89,16 +91,37 @@ namespace Streamstats.src.Service
             Grid.SetRow(messagePanel, 1);
 
             //MESSAGE PANEL | MESSAGE
-            TextBox message = new TextBox();
-            message.TextWrapping = TextWrapping.Wrap;
-            message.Text = _donation.data.message;
-            message.Foreground = Brushes.FloralWhite;
+            RichTextBox message = new RichTextBox();
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.Foreground = Brushes.FloralWhite;
+            foreach(string segment in _donation.data.message.Split(' '))
+            {
+                if (Uri.IsWellFormedUriString(segment, UriKind.Absolute))
+                {
+                    Hyperlink hyperlink = new Hyperlink(new Run(segment));
+                    hyperlink.NavigateUri = new Uri(segment);
+                    hyperlink.Foreground = new SolidColorBrush(Color.FromRgb(105, 60, 153));
+                    //TODO: hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
+
+                    paragraph.Inlines.Add(hyperlink);
+                } 
+                else
+                {
+                    paragraph.Inlines.Add(new Run(segment + " "));
+                }
+            }
+
+            FlowDocument flowDocument = new FlowDocument();
+            flowDocument.Blocks.Add(paragraph);
+            message.Document = flowDocument;
+            message.IsReadOnly = true;
             message.Background = new SolidColorBrush(Color.FromRgb(3, 7, 19));
             message.BorderThickness = new Thickness(0);
             messagePanel.Children.Add(message);
 
             //ADD TO GRID
-            grid.Children.Add(topLeft);
+            grid.Children.Add(topLeft); 
             grid.Children.Add(timeAgo);
             grid.Children.Add(messagePanel);
 
@@ -111,6 +134,12 @@ namespace Streamstats.src.Service
             groupBox.Style = (Style) App.Current.FindResource("groupBoxStyle");
 
             return groupBox;
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
 
         private string currency(string currencyCode)

@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Globalization;
 using Streamstats.src.Service;
+using System.Diagnostics;
 
 namespace Streamstats
 {
