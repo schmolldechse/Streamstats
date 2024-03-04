@@ -23,6 +23,9 @@ namespace Streamstats
         {
             InitializeComponent();
 
+            if (App.config.jwtToken != null && App.config.jwtToken.Length > 0) textBox_jwtToken.Text = App.config.jwtToken;
+            if (App.config.twitchToken != null && App.config.twitchToken.Length > 0) textBox_twitchToken.Text = App.config.twitchToken;
+
             button_Login.Click += Button_Login;
         }
 
@@ -32,6 +35,7 @@ namespace Streamstats
                 && textBox_twitchToken.Text.Length > 0)
             {
                 App.config.jwtToken = textBox_jwtToken.Text;
+                App.config.twitchToken = textBox_twitchToken.Text;
                 App.config.save();
 
                 connect();
@@ -47,7 +51,7 @@ namespace Streamstats
             int trys = 0;
             do
             {
-                if (trys >= 6)
+                if (trys >= 5)
                 {
                     Console.WriteLine($"Stopped connection after {trys} attemptions");
                     return;

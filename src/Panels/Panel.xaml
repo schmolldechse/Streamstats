@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Streamstats"
         mc:Ignorable="d"
-        Title="Panel" Height="850" Width="350"
+        Title="Panel" 
+        MinHeight="850"
+        MinWidth="450" 
+        Height="850"
+        Width="450"
         Background="#030713">
 
     <Window.Resources>
@@ -17,7 +21,7 @@
                     <ControlTemplate TargetType="ScrollBar">
                         <Grid>
                             <Border Background="{TemplateBinding Background}" CornerRadius="3" />
-                            <Track Grid.Row="2" x:Name="PART_Track">
+                            <Track Grid.Row="2" x:Name="PART_Track" IsDirectionReversed="True">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
                                 </Track.DecreaseRepeatButton>
@@ -41,6 +45,43 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <BorderGapMaskConverter x:Key="BorderGapMaskConverter"/>
+        <Style x:Key="test" TargetType="{x:Type GroupBox}">
+            <Setter Property="BorderBrush" Value="#1E222E"/>
+            <Setter Property="BorderThickness" Value="0.4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GroupBox}">
+                        <Grid SnapsToDevicePixels="true">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="6"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="6"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="6"/>
+                            </Grid.RowDefinitions>
+                            <Border BorderBrush="#1E222E" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Grid.Column="0" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3"/>
+                            <Border BorderBrush="#1E222E" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="4" CornerRadius="4" Grid.Row="1" Grid.RowSpan="3">
+
+                                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
+                                    <Border BorderBrush="#1E222E" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2"/>
+                                </Border>
+                            </Border>
+                            <Border x:Name="Header" Grid.Column="1" Padding="3,1,3,0" Grid.Row="0" Grid.RowSpan="2">
+                                <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                            <ContentPresenter Grid.ColumnSpan="2" Grid.Column="1" Margin="{TemplateBinding Padding}" Grid.Row="2" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid Background="#030713" Margin="4">
@@ -48,31 +89,47 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*" /> 
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="top_ControlPanel" Orientation="Horizontal" Grid.Row="0">
-            <!-- <Button VerticalAlignment="Top" HorizontalAlignment="Left" >lol</Button> -->
+            <Button VerticalAlignment="Top" HorizontalAlignment="Left" >lol</Button>
         </StackPanel>
 
-        <ScrollViewer x:Name="donation_Panel" Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                <!--
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+            <StackPanel x:Name="donation_Panel" Margin="10 5 10 5">
+
+                <GroupBox Style="{DynamicResource test}">
+                    <StackPanel>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Margin="5 12 0 0">
+                                <Border BorderBrush="#212936"
+                                    Background="#212936"
+                                    CornerRadius="10">
+                                    <TextBlock Text="tedddddst€" Foreground="FloralWhite" Margin="5 5 5 5"/>
+                                </Border>
+                            </TextBlock>
+
+                            <TextBlock Margin="90 12 0 0">
+                                <Border BorderBrush="#212936"
+                                    Background="#212936"
+                                    CornerRadius="10">
+                                    <TextBlock Text="tedddddst€" Foreground="FloralWhite" Margin="15 5 15 5"/>
+                                </Border>
+                            </TextBlock>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+
+                <Image Source="../../Images/S.ico" />
+                
             </StackPanel>
         </ScrollViewer>
 

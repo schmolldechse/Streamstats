@@ -14,13 +14,15 @@ namespace Streamstats.src.Service.Streamelements
     public class StreamelementsService
     {
 
-        private readonly string STREAMELEMENTS_TIPS_API = "https://api.streamelements.com/kappa/v2/tips/channelId";
+        public readonly string STREAMELEMENTS_TIPS_API = "https://api.streamelements.com/kappa/v2/tips/channelId";
 
-        public Boolean CONNECTED;
+        public Boolean CONNECTED, FETCHED_DONATIONS;
 
         public List<Donation> donations;
 
-        private string channelId = "";
+        public string channelId = "";
+
+        public SocketIOClient.SocketIO client;
 
         public StreamelementsService()
         {
@@ -28,11 +30,12 @@ namespace Streamstats.src.Service.Streamelements
             donations.Sort((donation1, donation2) => donation1.createdAt.CompareTo(donation2.createdAt));
 
             CONNECTED = false;
+            FETCHED_DONATIONS = false;
         }
 
         public async Task ConnectSocket()
         {
-            SocketIOClient.SocketIO client = new SocketIOClient.SocketIO("https://realtime.streamelements.com", new SocketIOOptions
+            client = new SocketIOClient.SocketIO("https://realtime.streamelements.com", new SocketIOOptions
             {
                 EIO = EngineIO.V4,
                 Transport = TransportProtocol.WebSocket
@@ -48,20 +51,15 @@ namespace Streamstats.src.Service.Streamelements
 
                 CONNECTED = true;
             });
-
-            client.On("event", (data) =>
-            {
-                Console.WriteLine($"Received a new donation {data}");
-
-                handleIncomingDonation(data.ToString());
-            });
-
+            
+            /*
             client.On("unauthorized", (data) =>
             {
                 Console.WriteLine($"Failed to connect - Unauthorized {data}");
 
                 CONNECTED = false;
             });
+            */
 
             client.On("unauthenticated", (data) =>
             {
@@ -80,29 +78,6 @@ namespace Streamstats.src.Service.Streamelements
             await client.EmitAsync("authenticate", new { method = "jwt", token = App.config.jwtToken });
         }
 
-        public void handleIncomingDonation(string data)
-        {
-            JArray jArray = JArray.Parse(data);
-            JObject donation = (JObject)jArray.First;
-
-            string provider = donation["provider"].ToString();
-            string channel = donation["channel"].ToString();
-            DateTime createdAt = DateTime.Parse(donation["createdAt"].ToString());
-
-            int amount = donation["data"]["amount"].ToObject<int>();
-            string currency = donation["data"]["currency"].ToString();
-            string username = donation["data"]["username"].ToString();
-            string transactionId = donation["data"]["tipId"].ToString();
-            string message = donation["data"]["message"].ToString();
-
-            string _id = donation["_id"].ToString();
-
-            Donation fetched = fetchDonation(donation);
-
-            donations.Insert(0, fetched);
-            //Panel.donation_Panel.AddLatestTip(donation);
-        }
-
         public void fetchLatestTips()
         {
             Task.Run(async () =>
@@ -119,6 +94,7 @@ namespace Streamstats.src.Service.Streamelements
                     }
 
                     Console.WriteLine($"Fetched {donations.Count} donations");
+                    FETCHED_DONATIONS = true;
                 }
                 else
                 {
@@ -127,7 +103,7 @@ namespace Streamstats.src.Service.Streamelements
             });
         }
 
-        private Donation fetchDonation(JObject donation)
+        public Donation fetchDonation(JObject donation)
         {
             string provider = donation["provider"].ToString();
             string channel = donation["channel"].ToString();
