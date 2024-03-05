@@ -12,8 +12,8 @@ This program provides a convenient interface to monitor recent activities on twi
 ## ToDo List
 
 - [] include Twitch API
-- [] pause button
-- [] mute button
+- [X] pause button
+- [X] mute button
 - [] search field for messages 
 - [] hyperlinks clickable
 - [X] "X New Events" Button on the bottom right corner, if current view (VerticalOffset) of ScrollViewer is not on the top

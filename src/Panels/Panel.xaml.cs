@@ -31,7 +31,7 @@ namespace Streamstats.src.Panels
         private Donation startToMiss_Donation;
         private int missedDonations;
 
-        private bool ALERTS_PAUSED;
+        private bool ALERTS_PAUSED, ALERTS_MUTED;
 
         //private double previousY_Donation;
 
@@ -39,6 +39,7 @@ namespace Streamstats.src.Panels
          * {0} represents channelId
          */
         private readonly string STREAMELEMENTS_PAUSE_API = "https://api.streamelements.com/kappa/v3/overlays/{0}/action";
+        private readonly string STREAMELEMENTS_SKIP_MUTE_API = "https://api.streamelements.com/kappa/v2/channels/{0}/socket";
 
         public Panel()
         {
@@ -79,7 +80,7 @@ namespace Streamstats.src.Panels
             // Receiving an update (pause/unpause)
             App.se_service.client.On("overlay:togglequeue", (data) =>
             {
-                Console.WriteLine($"Received an overlay update (pause/unpause) : {data}");
+                Console.WriteLine($"Received an overlay update (pause/unpause alerts) : {data}");
 
                 bool value = (bool)JArray.Parse(data.ToString())[0];
 
@@ -106,7 +107,29 @@ namespace Streamstats.src.Panels
             // Receiving an update (mute/unmute)
             App.se_service.client.On("overlay:mute", (data) =>
             {
-                Console.WriteLine($"Received an overlay update (mute/unmute) : {data}");
+                Console.WriteLine($"Received an overlay update (mute/unmute alerts) : {data}");
+
+                List<Dictionary<string, string>> jsonArray = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(data.ToString());
+                bool value = Convert.ToBoolean(jsonArray[0]["muted"]);
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    ALERTS_MUTED = value;
+                    switch (ALERTS_MUTED)
+                    {
+                        case true:
+                            mute_Button_Image.Dispatcher.Invoke(() => mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Muted.ico", UriKind.RelativeOrAbsolute)));
+                            break;
+
+                        case false:
+                            mute_Button_Image.Dispatcher.Invoke(() => mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Unmuted.ico", UriKind.RelativeOrAbsolute)));
+                            break;
+                    }
+                    mute_Button_Image.Height = 20;
+                    mute_Button_Image.Width = 20;
+
+                    mute_Button.Content = mute_Button_Image;
+                });
             });
         }
 
@@ -218,6 +241,9 @@ namespace Streamstats.src.Panels
             return null;
         }
 
+        /**
+         * Pause / unpause alerts button
+         */
         private void Pause_Button_Click(object sender, RoutedEventArgs e)
         {
             ALERTS_PAUSED = !ALERTS_PAUSED;
@@ -251,6 +277,62 @@ namespace Streamstats.src.Panels
                 Console.WriteLine($"Sent http request : {jsonResponse}");
             });
         }
+
+        /**
+         * Skip alerts button
+         */
+        private void Skip_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Task.Run(async () =>
+            {
+                using StringContent jsonContent = new StringContent(
+                    "{\"event\": \"event:skip\", \"data\": {}}",
+                    Encoding.UTF8,
+                    "application/json");
+
+                using HttpResponseMessage responseMessage = await App.httpClient.PostAsync(string.Format(STREAMELEMENTS_SKIP_MUTE_API, App.se_service.channelId), jsonContent);
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"Sent http request : {jsonResponse}");
+            });
+        }
+
+        /**
+         * Mute / unmute alerts button
+         */
+        private void Mute_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ALERTS_MUTED = !ALERTS_MUTED;
+            switch (ALERTS_MUTED)
+            {
+                case true:
+                    mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Muted.ico", UriKind.RelativeOrAbsolute));
+                    break;
+
+                case false:
+                    mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Unmuted.ico", UriKind.RelativeOrAbsolute));
+                    break;
+            }
+
+            mute_Button_Image.Height = 20;
+            mute_Button_Image.Width = 20;
+
+            mute_Button.Content = mute_Button_Image;
+
+            Task.Run(async () =>
+            {
+                using StringContent jsonContent = new StringContent(
+                    $"{{\"event\": \"overlay:mute\", \"data\": {{ \"muted\": \"{ALERTS_MUTED}\" }} }}",
+                    Encoding.UTF8,
+                    "application/json");
+
+                using HttpResponseMessage responseMessage = await App.httpClient.PostAsync(string.Format(STREAMELEMENTS_SKIP_MUTE_API, App.se_service.channelId), jsonContent);
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"Sent http request : {jsonResponse}");
+            });
+        }
+
 
         /**
          * Loads current state of donations [paused, unpause]

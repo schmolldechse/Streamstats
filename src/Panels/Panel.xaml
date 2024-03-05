@@ -101,6 +101,22 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform />
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform X="2" Y="2" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
 
@@ -119,6 +135,7 @@
                     Grid.Row="0"
                     Margin="9 7 2 4">
 
+            <!-- Pause / Unpause alerts button -->
             <Border Background="#030713"
                     BorderBrush="#212936"
                     BorderThickness="2"
@@ -133,6 +150,44 @@
                            Source="../../Images/Play_Red.ico" 
                            Height="15"
                            Width="15" />
+                </Button>
+            </Border>
+            
+            <!-- Skip alerts button -->
+            <Border Background="#030713"
+                    BorderBrush="#212936"
+                    BorderThickness="2"
+                    CornerRadius="4"
+                    Margin="10 0 0 0">
+                <Button Background="Transparent" 
+                        BorderThickness="0"
+                        Margin="12 0 12 0"
+                        x:Name="skip_Button"
+                        Click="Skip_Button_Click"
+                        Style="{DynamicResource controlButtons}">
+                    <Image x:Name="skip_Button_Image"
+                           Source="../../Images/Skip.ico" 
+                           Height="25"
+                           Width="25" />
+                </Button>
+            </Border>
+
+            <!-- Mute / unmute alerts button -->
+            <Border Background="#030713"
+                    BorderBrush="#212936"
+                    BorderThickness="2"
+                    CornerRadius="4"
+                    Margin="10 0 0 0">
+                <Button Background="Transparent" 
+                        BorderThickness="0"
+                        Margin="12 0 12 0"
+                        x:Name="mute_Button"
+                        Click="Mute_Button_Click"
+                        Style="{DynamicResource controlButtons}">
+                    <Image x:Name="mute_Button_Image"
+                           Source="../../Images/Unmuted.ico" 
+                           Height="20"
+                           Width="20" />
                 </Button>
             </Border>
         </StackPanel>
