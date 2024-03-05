@@ -106,7 +106,7 @@ namespace Streamstats.src.Service.Streamelements
             string channel = donation["channel"].ToString();
             DateTime createdAt = DateTime.Parse(donation["createdAt"].ToString());
 
-            int amount = 0;
+            decimal amount = 0;
             string currency = null,
                 username = null,
                 email = null,
@@ -114,14 +114,14 @@ namespace Streamstats.src.Service.Streamelements
                 message = null;
             if (donation.ContainsKey("donation"))
             {
-                amount = donation["donation"]["amount"].ToObject<int>();
+                amount = donation["donation"]["amount"].ToObject<decimal>();
                 currency = donation["donation"]["currency"].ToString();
                 username = donation["donation"]["user"]["username"].ToString();
                 email = donation["donation"]["user"]["email"].ToString();
                 transactionId = donation["transactionId"].ToString();
                 message = donation["donation"]["message"].ToString();
             } else if (donation.ContainsKey("data")) { 
-                amount = donation["data"]["amount"].ToObject<int>();
+                amount = donation["data"]["amount"].ToObject<decimal>();
                 currency = donation["data"]["currency"].ToString();
                 username = donation["data"]["username"].ToString();
                 //email = null;

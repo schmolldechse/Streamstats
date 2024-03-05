@@ -64,11 +64,11 @@ namespace Streamstats.src.Service
             amount_Border.CornerRadius = new CornerRadius(10);
 
             TextBlock amount_Inner = new TextBlock();
-            amount_Inner.Text = _donation.data.amount + " " + currency(_donation.data.currency);
+            amount_Inner.Text = formatCurrency(_donation.data.amount, _donation.data.currency);
             amount_Inner.FontWeight = FontWeights.Bold;
             amount_Inner.Foreground = Brushes.FloralWhite;
-            amount_Inner.Margin = new Thickness(15, 5, 15, 5);
-            amount_Inner.Effect = new DropShadowEffect() { Color = Colors.White, Direction = 0, ShadowDepth = 0, Opacity = 1 };
+            amount_Inner.Margin = new Thickness(11, 4, 11, 4);
+            //amount_Inner.Effect = new DropShadowEffect() { Color = Colors.White, Direction = 0, ShadowDepth = 0, Opacity = 1 };
 
             amount_Border.Child = amount_Inner;
             amount_Outer.Inlines.Add(amount_Border);
@@ -131,6 +131,7 @@ namespace Streamstats.src.Service
             message.IsReadOnly = true;
             message.Background = new SolidColorBrush(Color.FromRgb(3, 7, 19));
             message.BorderThickness = new Thickness(0);
+            message.FontWeight = FontWeights.Medium;
             messagePanel.Children.Add(message);
 
             //ADD TO GRID
@@ -145,15 +146,21 @@ namespace Streamstats.src.Service
             groupBox.Content = stackPanel;
             groupBox.Margin = new Thickness((type == Type.NORMAL ? 0 : 7), 0, (type == Type.NORMAL ? 0 : 10), ( type == Type.NORMAL ? 10 : 6 ) );
             groupBox.Style = (Style) App.Current.FindResource( type == Type.NORMAL ? "donation" : "highestDonation" );
+            groupBox.Tag = _donation;
 
             return groupBox;
         }
 
-        private string currency(string currencyCode)
+        private string formatCurrency(decimal amount, string currency)
         {
-            CultureInfo cultureInfo = CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE");
-            RegionInfo regionInfo = new RegionInfo(cultureInfo.Name);
-            return regionInfo.CurrencySymbol;
+            string a = amount % 1 == 0 ? $"{amount}" : $"{amount: 0.00}";
+            string b = currency switch
+            {
+                "EUR" => a + " €",
+                "USD" => "$ " + a,
+                _ => a + currency
+            };
+            return b;
         }
 
         private string timeDifference(DateTime past)

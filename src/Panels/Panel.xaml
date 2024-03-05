@@ -137,7 +137,6 @@
         <ScrollViewer Grid.Row="1" 
                       VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Disabled"
-                      ScrollChanged="DonationPanel_ScrollChanged"
                       x:Name="scrollViewer_donationPanel">
             <StackPanel x:Name="donation_Panel" 
                         Margin="7 5 7 5">

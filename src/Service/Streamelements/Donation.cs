@@ -31,14 +31,14 @@ namespace Streamstats.src.Service.Streamelements
 
     public class Data
     {
-        public int amount { get; set; }
+        public decimal amount { get; set; }
         public string currency { get; set; }
         public string username { get; set; }
         public string email { get; set; }
         public string transactionId { get; set; }
         public string message { get; set; }
 
-        public Data(int amount, string currency, string username, string email, string transactionId, string message)
+        public Data(decimal amount, string currency, string username, string email, string transactionId, string message)
         {
             this.amount = amount;
             this.currency = currency;
