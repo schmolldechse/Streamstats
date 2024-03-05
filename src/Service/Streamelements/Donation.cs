@@ -35,22 +35,22 @@ namespace Streamstats.src.Service.Streamelements
         public string currency { get; set; }
         public string username { get; set; }
         public string email { get; set; }
-        public string transactionId { get; set; }
+        public string activityId { get; set; }
         public string message { get; set; }
 
-        public Data(decimal amount, string currency, string username, string email, string transactionId, string message)
+        public Data(decimal amount, string currency, string username, string email, string activityId, string message)
         {
             this.amount = amount;
             this.currency = currency;
             this.username = username;
             this.email = email;
-            this.transactionId = transactionId;
+            this.activityId = activityId;
             this.message = message;
         }
 
         public override string ToString()
         {
-            return $"{amount}, Currency: {currency}, username: {username}, email: {email}, TransactionId: {transactionId}, Message: {message}";
+            return $"{amount}, Currency: {currency}, username: {username}, email: {email}, ActivityId: {activityId}, Message: {message}";
         }
     }
 }

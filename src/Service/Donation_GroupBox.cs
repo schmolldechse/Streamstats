@@ -1,9 +1,13 @@
 ﻿using Streamstats.src.Service.Streamelements;
+using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net.Http;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
@@ -14,6 +18,8 @@ namespace Streamstats.src.Service
 {
     public class Donation_GroupBox
     {
+
+        private readonly string STREAMELEMENTS_REPLAY_API = "https://api.streamelements.com/kappa/v2/activities/{0}/{1}/replay";
 
         private Donation _donation;
 
@@ -48,6 +54,9 @@ namespace Streamstats.src.Service
             Grid grid = new Grid();
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             //TOP LEFT
             StackPanel topLeft = new StackPanel();
@@ -88,7 +97,7 @@ namespace Streamstats.src.Service
 
             //DONATION ... AGO
             TextBlock timeAgo = new TextBlock();
-            timeAgo.Margin = new Thickness(0, 16, 10, 0);
+            timeAgo.Margin = new Thickness(0, 10, 4, 0); //old : 0 16 10 0
             timeAgo.Text = timeDifference(_donation.createdAt);
             timeAgo.Foreground = Brushes.Gray;
             timeAgo.FontWeight = FontWeights.Medium;
@@ -97,6 +106,26 @@ namespace Streamstats.src.Service
 
             timeAgoBlock = timeAgo;
             //Grid.SetRow(timeAgo, 0);
+
+            //REPLAY BUTTON
+            Button replay = new Button();
+            replay.Margin = new Thickness(0, 0, 5, 5);
+            replay.HorizontalAlignment = HorizontalAlignment.Right;
+            replay.VerticalAlignment = VerticalAlignment.Bottom;
+            replay.Background = new SolidColorBrush((Color) ColorConverter.ConvertFromString("#030713"));
+            replay.BorderThickness = new Thickness(0);
+            replay.Style = (Style)App.Current.FindResource("replayButton");
+            Grid.SetRow(replay, 1);
+            Grid.SetColumn(replay, 1);
+
+            //REPLAY BUTTON | IMAGE
+            Image replayIcon = new Image();
+            replayIcon.Source = new BitmapImage(new Uri("../../Images/Replay.ico", UriKind.RelativeOrAbsolute));
+            replayIcon.Height = 20;
+            replayIcon.Width = 20;
+
+            replay.Content = replayIcon;
+            replay.Click += Replay_Click;
 
             //MESSAGE PANEL
             WrapPanel messagePanel = new WrapPanel();
@@ -138,6 +167,7 @@ namespace Streamstats.src.Service
             //ADD TO GRID
             grid.Children.Add(topLeft);
             grid.Children.Add(timeAgo);
+            grid.Children.Add(replay);
             grid.Children.Add(messagePanel);
 
             //ADD TO STACK PANEL
@@ -145,7 +175,7 @@ namespace Streamstats.src.Service
 
             GroupBox groupBox = new GroupBox();
             groupBox.Content = stackPanel;
-            groupBox.Margin = new Thickness((type == Type.NORMAL ? 0 : 7), 0, (type == Type.NORMAL ? 0 : 10), 4 );
+            groupBox.Margin = new Thickness((type == Type.NORMAL ? 0 : 7), 0, (type == Type.NORMAL ? 0 : 10), (type == Type.NORMAL ? 4 : 6) );
             //groupBox.Style = (Style) App.Current.FindResource( type == Type.NORMAL ? "donation" : "highestDonation" );
             groupBox.Style = (Style) App.Current.FindResource("groupBoxWithBorder");
             groupBox.Tag = _donation;
@@ -153,6 +183,19 @@ namespace Streamstats.src.Service
             groupBox.BorderThickness = new Thickness((type == Type.NORMAL ? 0.4 : 0.7));
 
             return groupBox;
+        }
+
+        private void Replay_Click(object sender, RoutedEventArgs e)
+        {
+            Task.Run(async () =>
+            {
+                using StringContent jsonContent = new StringContent("", Encoding.UTF8, "application/json");
+
+                using HttpResponseMessage responseMessage = await App.httpClient.PostAsync(string.Format(STREAMELEMENTS_REPLAY_API, App.se_service.channelId, _donation.data.activityId), jsonContent);
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"Sent http request : {jsonResponse}");
+            });
         }
 
         private string formatCurrency(decimal amount, string currency)

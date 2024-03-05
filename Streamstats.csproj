@@ -14,6 +14,7 @@
     <None Remove="Images\Pause.ico" />
     <None Remove="Images\Play.ico" />
     <None Remove="Images\Play_Red.ico" />
+    <None Remove="Images\Replay.ico" />
     <None Remove="Images\Skip.ico" />
     <None Remove="Images\Unmuted.ico" />
   </ItemGroup>
@@ -32,6 +33,7 @@
     <Resource Include="Images\Pause.ico" />
     <Resource Include="Images\Play.ico" />
     <Resource Include="Images\Play_Red.ico" />
+    <Resource Include="Images\Replay.ico" />
     <Resource Include="Images\Skip.ico" />
     <Resource Include="Images\Unmuted.ico" />
   </ItemGroup>

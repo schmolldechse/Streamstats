@@ -41,6 +41,28 @@
             </Setter>
         </Style>
 
+        <Style x:Key="replayButton" TargetType="{x:Type Button}">
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform />
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform X="2" Y="2" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- old corner radients : 4 4 3 2 -->
 
     </Application.Resources>
