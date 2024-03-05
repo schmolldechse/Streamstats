@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Streamstats.src.Panels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -74,7 +75,7 @@ namespace Streamstats
             Console.WriteLine($"{trys} attemption(s) were needed | Switching to panel");
 
             this.Hide();
-            new Panel().Show();
+            new src.Panels.Panel().Show();
         }
     }
 }
