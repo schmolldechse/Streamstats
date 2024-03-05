@@ -32,6 +32,7 @@ namespace Streamstats.src.Notification
             this.Margin = new Thickness(0, 15, 0, 0);
 
             StackPanel stackPanel = new StackPanel();
+            stackPanel.VerticalAlignment = VerticalAlignment.Top;
             stackPanel.Margin = new Thickness(10, 8, 10, 5);
 
             TextBlock textBlock = new TextBlock();

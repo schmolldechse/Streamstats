@@ -21,6 +21,8 @@ namespace Streamstats
     public partial class Login : Window
     {
 
+        private bool CURRENTLY_LOGGING_IN = false;
+
         public Login()
         {
             InitializeComponent();
@@ -33,7 +35,11 @@ namespace Streamstats
 
         private void Button_Login(object sender, RoutedEventArgs e)
         {
-            if (!button_Login.IsEnabled) return;
+            if (CURRENTLY_LOGGING_IN)
+            {
+                notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", "Already logging in. Please wait."));
+                return;
+            }
 
             if (textBox_jwtToken.Text.Length > 0 
                 && textBox_twitchToken.Text.Length > 0)
@@ -44,7 +50,7 @@ namespace Streamstats
 
                 connect();
 
-                button_Login.IsEnabled = false;
+                CURRENTLY_LOGGING_IN = true;
             }
             else
             {
@@ -59,13 +65,15 @@ namespace Streamstats
             {
                 if (trys >= 5)
                 {
-                    button_Login.IsEnabled = true;
+                    CURRENTLY_LOGGING_IN = false;
+                    notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", "Cancelled logging in"));
                     Console.WriteLine($"Stopped connection after {trys} attemptions");
                     return;
                 }
 
-                Console.WriteLine("Trying to connect ...");
                 trys++;
+                Console.WriteLine("Trying to connect ...");
+                notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", $"Try to log in.. ({trys} / 5)"));
 
                 await App.se_service.ConnectSocket();
                 await Task.Delay(2000);
