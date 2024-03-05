@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Streamstats.src.Panels"
         mc:Ignorable="d"
-        Title="Panel" 
+        Title="Streamstats" 
         MinHeight="600"
         MinWidth="400" 
-        Height="700"
+        Height="950"
         Width="450"
         Background="#030713">
 
@@ -66,7 +66,7 @@
             </Setter>
         </Style>
 
-        <Style x:Key="buttonStyle" TargetType="{x:Type Button}">
+        <Style x:Key="button_BackToTop" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="#692AD1" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -88,6 +88,20 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="controlButtons" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#030713" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="20">
+                            <ContentPresenter VerticalAlignment="Center"
+                               HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid Background="#030713" Margin="4 4 4 0">
@@ -99,19 +113,38 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <!-- Control Panel -->
         <StackPanel x:Name="top_ControlPanel" 
                     Orientation="Horizontal" 
-                    Grid.Row="0">
-            <Button VerticalAlignment="Top" 
-                    HorizontalAlignment="Left" >lol</Button>
+                    Grid.Row="0"
+                    Margin="9 7 2 4">
+
+            <Border Background="#030713"
+                    BorderBrush="#212936"
+                    BorderThickness="2"
+                    CornerRadius="4">
+                <Button Background="Transparent" 
+                        BorderThickness="0"
+                        Margin="12 5 12 5"
+                        x:Name="pause_Button"
+                        Click="Pause_Button_Click"
+                        Style="{DynamicResource controlButtons}">
+                    <Image x:Name="pause_Button_Image" 
+                           Source="../../Images/Play_Red.ico" 
+                           Height="15"
+                           Width="15" />
+                </Button>
+            </Border>
         </StackPanel>
 
+        <!-- Donation Panel -->
         <ScrollViewer Grid.Row="1" 
                       VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Disabled"
-                      x:Name="scrollViewer_donationPanel">
+                      x:Name="scrollViewer_donationPanel"
+                      Margin="2 1 2 7">
             <StackPanel x:Name="donation_Panel"
-                        Margin="7 5 7 5"
+                        Margin="7 5 7 -2"
                         Orientation="Vertical">
 
                 <!-- groupboxes being added via code -->
@@ -125,13 +158,15 @@
                 VerticalAlignment="Bottom"
                 Margin="0 0 25 10"
                 Panel.ZIndex="1" 
-                Style="{DynamicResource buttonStyle}"
+                Style="{DynamicResource button_BackToTop}"
                 Foreground="FloralWhite"
                 FontWeight="Bold"
                 Content="⮝ 0 New Events"
                 FontSize="13" 
                 Click="backToTop_Donations_Click"/>
 
+
+        <!-- Splitter -->
         <GridSplitter Grid.Row="2" 
                       Height="3" 
                       HorizontalAlignment="Stretch" 
@@ -139,9 +174,11 @@
                       Background="#333742" 
                       />
 
+        <!-- Subscriber Panel -->
         <ScrollViewer Grid.Row="3" 
                       VerticalScrollBarVisibility="Auto" 
-                      HorizontalScrollBarVisibility="Disabled">
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="2 5 2 0">
             <StackPanel x:Name="subsriber_panel">
                 <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
                 <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
@@ -161,24 +198,30 @@
             </StackPanel>
         </ScrollViewer>
 
-
-
         <Button x:Name="backToTop_Subscriptions"
                 Grid.Row="3"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Margin="0 0 25 10"
                 Panel.ZIndex="1" 
-                Style="{DynamicResource buttonStyle}"
+                Style="{DynamicResource button_BackToTop}"
                 Foreground="FloralWhite"
                 FontWeight="Bold"
                 Content="⮝ 0 New Events"
                 FontSize="13" />
 
+        <!-- Dynamic : Top Donation -->
         <StackPanel x:Name="top_Donation"
                 Orientation="Vertical"
-                Grid.Row="4">
+                Grid.Row="4" />
 
-        </StackPanel>
+        <!-- Notification Center -->
+        <StackPanel Grid.Row="4"
+                    Panel.ZIndex="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Orientation="Vertical"
+                    x:Name="notificationCenter"
+                    Margin="0 0 15 15" />
     </Grid>
 </Window>

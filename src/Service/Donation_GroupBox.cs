@@ -145,7 +145,7 @@ namespace Streamstats.src.Service
 
             GroupBox groupBox = new GroupBox();
             groupBox.Content = stackPanel;
-            groupBox.Margin = new Thickness((type == Type.NORMAL ? 0 : 7), 0, (type == Type.NORMAL ? 0 : 10), ( type == Type.NORMAL ? 10 : 6 ) );
+            groupBox.Margin = new Thickness((type == Type.NORMAL ? 0 : 7), 0, (type == Type.NORMAL ? 0 : 10), 4 );
             //groupBox.Style = (Style) App.Current.FindResource( type == Type.NORMAL ? "donation" : "highestDonation" );
             groupBox.Style = (Style) App.Current.FindResource("groupBoxWithBorder");
             groupBox.Tag = _donation;

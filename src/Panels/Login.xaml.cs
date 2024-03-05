@@ -63,10 +63,10 @@ namespace Streamstats
             int trys = 0;
             do
             {
-                if (trys >= 5)
+                if (trys > 5)
                 {
                     CURRENTLY_LOGGING_IN = false;
-                    notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", "Cancelled logging in"));
+                    notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not log in"));
                     Console.WriteLine($"Stopped connection after {trys} attemptions");
                     return;
                 }

@@ -16,6 +16,9 @@ using System.Windows.Shapes;
 using Newtonsoft.Json.Linq;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Effects;
+using Streamstats.src.Notification;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace Streamstats.src.Panels
 {
@@ -28,19 +31,31 @@ namespace Streamstats.src.Panels
         private Donation startToMiss_Donation;
         private int missedDonations;
 
+        private bool ALERTS_PAUSED;
+
         //private double previousY_Donation;
+
+        /**
+         * {0} represents channelId
+         */
+        private readonly string STREAMELEMENTS_PAUSE_API = "https://api.streamelements.com/kappa/v3/overlays/{0}/action";
 
         public Panel()
         {
             InitializeComponent();
 
-            //Hide back to top donations because there are no donations / subscriptions yet
+            notificationCenter.Children.Add(new src.Notification.Notification(7, "#4CAF50", "#388E3C", "#f5f5f5", "Logged in"));
+
+
+            // Hide back to top donations because there are no donations / subscriptions yet
             backToTop_Donations.Visibility = Visibility.Hidden;
             backToTop_Subscriptions.Visibility = Visibility.Hidden;
 
-            //StreamElements
+            // StreamElements
             App.httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {App.config.jwtToken}");
             if (App.se_service.CONNECTED) App.se_service.fetchLatestTips();
+
+            this.loadPausedUnpausedState();
 
             do
             {
@@ -54,10 +69,44 @@ namespace Streamstats.src.Panels
                 donation_Panel.Children.Insert(0, groupBox);
             }
 
+            // Incoming donations
             App.se_service.client.On("event", (data) =>
             {
-                Console.WriteLine($"Received a new donation {data}");
+                Console.WriteLine($"Received a new donation : {data}");
                 handleIncomingDonation(data.ToString());
+            });
+
+            // Receiving an update (pause/unpause)
+            App.se_service.client.On("overlay:togglequeue", (data) =>
+            {
+                Console.WriteLine($"Received an overlay update (pause/unpause) : {data}");
+
+                bool value = (bool)JArray.Parse(data.ToString())[0];
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    ALERTS_PAUSED = value;
+                    switch (ALERTS_PAUSED)
+                    {
+                        case true:
+                            pause_Button_Image.Dispatcher.Invoke(() => pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Play_Red.ico", UriKind.RelativeOrAbsolute)));
+                            break;
+
+                        case false:
+                            pause_Button_Image.Dispatcher.Invoke(() => pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Pause.ico", UriKind.RelativeOrAbsolute)));
+                            break;
+                    }
+                    pause_Button_Image.Height = 15;
+                    pause_Button_Image.Width = 15;
+
+                    pause_Button.Content = pause_Button_Image;
+                });
+            });
+
+            // Receiving an update (mute/unmute)
+            App.se_service.client.On("overlay:mute", (data) =>
+            {
+                Console.WriteLine($"Received an overlay update (mute/unmute) : {data}");
             });
         }
 
@@ -167,6 +216,74 @@ namespace Streamstats.src.Panels
             }
 
             return null;
+        }
+
+        private void Pause_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ALERTS_PAUSED = !ALERTS_PAUSED;
+            switch (ALERTS_PAUSED)
+            {
+                case true:
+                    pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Play_Red.ico", UriKind.RelativeOrAbsolute));
+                    break;
+
+                case false:
+                    pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Pause.ico", UriKind.RelativeOrAbsolute));
+                    break;
+            }
+
+            pause_Button_Image.Height = 15;
+            pause_Button_Image.Width = 15;
+
+            pause_Button.Content = pause_Button_Image;
+
+            Task.Run(async () =>
+            {
+                string action = ALERTS_PAUSED ? "pause" : "unpause";
+                using StringContent jsonContent = new StringContent(
+                    $"{{ \"action\" : \"{action}\" }}",
+                    Encoding.UTF8,
+                    "application/json");
+
+                using HttpResponseMessage responseMessage = await App.httpClient.PutAsync(string.Format(STREAMELEMENTS_PAUSE_API, App.se_service.channelId), jsonContent);
+                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
+
+                Console.WriteLine($"Sent http request : {jsonResponse}");
+            });
+        }
+
+        /**
+         * Loads current state of donations [paused, unpause]
+         */
+        private void loadPausedUnpausedState()
+        {
+            Task.Run(async () =>
+            {
+                var response = await App.httpClient.GetAsync(string.Format(STREAMELEMENTS_PAUSE_API, App.se_service.channelId));
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JsonConvert.DeserializeObject<JObject>(responseContent);
+                    Console.WriteLine($"Received state : {responseContent}");
+
+                    ALERTS_PAUSED = (bool)jsonObject["paused"];
+                    switch (ALERTS_PAUSED)
+                    {
+                        case true:
+                            pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Play_Red.ico", UriKind.RelativeOrAbsolute));
+                            break;
+
+                        case false:
+                            pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Pause.ico", UriKind.RelativeOrAbsolute));
+                            break;
+                    }
+
+                    pause_Button_Image.Height = 15;
+                    pause_Button_Image.Width = 15;
+
+                    pause_Button.Content = pause_Button_Image;
+                } else notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not load state (paused?)"));
+            });
         }
     }
 }
