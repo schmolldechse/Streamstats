@@ -10,20 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\Artboard-1.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Artboard-1.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SocketIOClient" Version="3.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Images\Artboard-1.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +31,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Images\" />
   </ItemGroup>
 
 </Project>

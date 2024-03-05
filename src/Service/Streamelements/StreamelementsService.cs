@@ -79,7 +79,7 @@ namespace Streamstats.src.Service.Streamelements
         {
             Task.Run(async () =>
             {
-                var response = await App.httpClient.GetAsync(STREAMELEMENTS_TIPS_API.Replace("channelId", channelId) + "?limit=50");
+                var response = await App.httpClient.GetAsync(STREAMELEMENTS_TIPS_API.Replace("channelId", channelId) + "?limit=100");
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();

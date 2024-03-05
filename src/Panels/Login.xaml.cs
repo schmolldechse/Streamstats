@@ -1,4 +1,5 @@
-﻿using Streamstats.src.Panels;
+﻿using Streamstats.src.Notification;
+using Streamstats.src.Panels;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,7 +48,7 @@ namespace Streamstats
             }
             else
             {
-                MessageBox.Show("Please enter your credentials");
+                notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", "Please enter your credentials"));
             }
         }
 

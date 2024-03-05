@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 
@@ -99,7 +100,7 @@ namespace Streamstats.src.Service
 
             //MESSAGE PANEL
             WrapPanel messagePanel = new WrapPanel();
-            messagePanel.Margin = new Thickness(10, 0, 10, 5);
+            messagePanel.Margin = new Thickness(3, 0, 3, 5);
             Grid.SetRow(messagePanel, 1);
 
             //MESSAGE PANEL | MESSAGE
@@ -135,7 +136,7 @@ namespace Streamstats.src.Service
             messagePanel.Children.Add(message);
 
             //ADD TO GRID
-            grid.Children.Add(topLeft); 
+            grid.Children.Add(topLeft);
             grid.Children.Add(timeAgo);
             grid.Children.Add(messagePanel);
 
@@ -145,8 +146,11 @@ namespace Streamstats.src.Service
             GroupBox groupBox = new GroupBox();
             groupBox.Content = stackPanel;
             groupBox.Margin = new Thickness((type == Type.NORMAL ? 0 : 7), 0, (type == Type.NORMAL ? 0 : 10), ( type == Type.NORMAL ? 10 : 6 ) );
-            groupBox.Style = (Style) App.Current.FindResource( type == Type.NORMAL ? "donation" : "highestDonation" );
+            //groupBox.Style = (Style) App.Current.FindResource( type == Type.NORMAL ? "donation" : "highestDonation" );
+            groupBox.Style = (Style) App.Current.FindResource("groupBoxWithBorder");
             groupBox.Tag = _donation;
+            groupBox.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString((type == Type.NORMAL ? "#1E222E" : "#5A5336")));
+            groupBox.BorderThickness = new Thickness((type == Type.NORMAL ? 0.4 : 0.7));
 
             return groupBox;
         }

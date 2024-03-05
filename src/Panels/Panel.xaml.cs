@@ -28,7 +28,7 @@ namespace Streamstats.src.Panels
         private Donation startToMiss_Donation;
         private int missedDonations;
 
-        private double previousY_Donation;
+        //private double previousY_Donation;
 
         public Panel()
         {

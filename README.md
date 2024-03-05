@@ -16,4 +16,4 @@ This program provides a convenient interface to monitor recent activities on twi
 - [] mute button
 - [] search field for messages 
 - [] hyperlinks clickable
-- [] "X New Events" Button on the bottom right corner, if current view (VerticalOffset) of ScrollViewer is not on the top
+- [X] "X New Events" Button on the bottom right corner, if current view (VerticalOffset) of ScrollViewer is not on the top
