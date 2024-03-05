@@ -17,4 +17,4 @@ This program provides a convenient interface to monitor recent activities on twi
 - [] search field for messages 
 - [] hyperlinks clickable
 - [X] "X New Events" Button on the bottom right corner, if current view (VerticalOffset) of ScrollViewer is not on the top
-- [ ] replay donations 
+- [X] replay donations 
