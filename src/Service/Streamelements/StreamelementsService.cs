@@ -106,6 +106,8 @@ namespace Streamstats.src.Service.Streamelements
             string channel = donation["channel"].ToString();
             DateTime createdAt = DateTime.Parse(donation["createdAt"].ToString());
 
+            //TODO: check type [tip , follower]
+
             decimal amount = 0;
             string currency = null,
                 username = null,

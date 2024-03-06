@@ -53,7 +53,7 @@ namespace Streamstats.src.Service
             //Whole grid of groupbox
             Grid grid = new Grid();
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -102,7 +102,7 @@ namespace Streamstats.src.Service
             timeAgo.Foreground = Brushes.Gray;
             timeAgo.FontWeight = FontWeights.Medium;
             timeAgo.HorizontalAlignment = HorizontalAlignment.Right;
-            timeAgo.VerticalAlignment = VerticalAlignment.Top;
+            timeAgo.VerticalAlignment = VerticalAlignment.Center;
 
             timeAgoBlock = timeAgo;
             //Grid.SetRow(timeAgo, 0);
@@ -128,49 +128,53 @@ namespace Streamstats.src.Service
             replay.Click += Replay_Click;
 
             //MESSAGE PANEL
-            WrapPanel messagePanel = new WrapPanel();
-            messagePanel.Margin = new Thickness(3, 0, 3, 5);
-            Grid.SetRow(messagePanel, 1);
-
-            //MESSAGE PANEL | MESSAGE
-            RichTextBox message = new RichTextBox();
-
-            Paragraph paragraph = new Paragraph();
-            paragraph.Foreground = Brushes.FloralWhite;
-            foreach(string segment in _donation.data.message.Split(' '))
+            WrapPanel? messagePanel = null;
+            if (_donation.data.message.Length > 1)
             {
-                if (Uri.IsWellFormedUriString(segment, UriKind.Absolute))
-                {
-                    Hyperlink hyperlink = new Hyperlink(new Run(segment));
-                    hyperlink.NavigateUri = new Uri(segment);
-                    hyperlink.Foreground = new SolidColorBrush(Color.FromRgb(105, 60, 153));
-                    //TODO: hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
+                messagePanel = new WrapPanel();
+                messagePanel.Margin = new Thickness(3, 0, 3, 5);
+                Grid.SetRow(messagePanel, 1);
 
-                    paragraph.Inlines.Add(hyperlink);
-                    paragraph.Inlines.Add(new Run(" "));
-                } 
-                else
+                //MESSAGE PANEL | MESSAGE
+                RichTextBox message = new RichTextBox();
+
+                Paragraph paragraph = new Paragraph();
+                paragraph.Foreground = Brushes.FloralWhite;
+                foreach (string segment in _donation.data.message.Split(' '))
                 {
-                    paragraph.Inlines.Add(new Run(segment + " "));
+                    if (Uri.IsWellFormedUriString(segment, UriKind.Absolute))
+                    {
+                        Hyperlink hyperlink = new Hyperlink(new Run(segment));
+                        hyperlink.NavigateUri = new Uri(segment);
+                        hyperlink.Foreground = new SolidColorBrush(Color.FromRgb(105, 60, 153));
+                        //TODO: hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
+
+                        paragraph.Inlines.Add(hyperlink);
+                        paragraph.Inlines.Add(new Run(" "));
+                    }
+                    else
+                    {
+                        paragraph.Inlines.Add(new Run(segment + " "));
+                    }
                 }
-            }
 
-            FlowDocument flowDocument = new FlowDocument();
-            flowDocument.Blocks.Add(paragraph);
-            message.Document = flowDocument;
-            message.IsReadOnly = true;
-            message.Background = new SolidColorBrush(Color.FromRgb(3, 7, 19));
-            message.BorderThickness = new Thickness(0);
-            message.FontWeight = FontWeights.Medium;
-            messagePanel.Children.Add(message);
+                FlowDocument flowDocument = new FlowDocument();
+                flowDocument.Blocks.Add(paragraph);
+                message.Document = flowDocument;
+                message.IsReadOnly = true;
+                message.Background = new SolidColorBrush(Color.FromRgb(3, 7, 19));
+                message.BorderThickness = new Thickness(0);
+                message.FontWeight = FontWeights.Medium;
+                messagePanel.Children.Add(message);
+            }
 
             //ADD TO GRID
             grid.Children.Add(topLeft);
             grid.Children.Add(timeAgo);
-            grid.Children.Add(replay);
-            grid.Children.Add(messagePanel);
+            //grid.Children.Add(replay);
+            if (messagePanel != null) grid.Children.Add(messagePanel);
 
-            //ADD TO STACK PANEL
+            //ADD GRID TO STACK PANEL
             stackPanel.Children.Add(grid);
 
             GroupBox groupBox = new GroupBox();
