@@ -97,8 +97,6 @@ namespace Streamstats.src.Panels
                             pause_Button_Image.Dispatcher.Invoke(() => pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Pause.ico", UriKind.RelativeOrAbsolute)));
                             break;
                     }
-                    pause_Button_Image.Height = 15;
-                    pause_Button_Image.Width = 15;
 
                     pause_Button.Content = pause_Button_Image;
                 });
@@ -125,8 +123,6 @@ namespace Streamstats.src.Panels
                             mute_Button_Image.Dispatcher.Invoke(() => mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Unmuted.ico", UriKind.RelativeOrAbsolute)));
                             break;
                     }
-                    mute_Button_Image.Height = 20;
-                    mute_Button_Image.Width = 20;
 
                     mute_Button.Content = mute_Button_Image;
                 });
@@ -258,9 +254,6 @@ namespace Streamstats.src.Panels
                     break;
             }
 
-            pause_Button_Image.Height = 15;
-            pause_Button_Image.Width = 15;
-
             pause_Button.Content = pause_Button_Image;
 
             Task.Run(async () =>
@@ -314,9 +307,6 @@ namespace Streamstats.src.Panels
                     break;
             }
 
-            mute_Button_Image.Height = 20;
-            mute_Button_Image.Width = 20;
-
             mute_Button.Content = mute_Button_Image;
 
             Task.Run(async () =>
@@ -359,9 +349,6 @@ namespace Streamstats.src.Panels
                             pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Pause.ico", UriKind.RelativeOrAbsolute));
                             break;
                     }
-
-                    pause_Button_Image.Height = 15;
-                    pause_Button_Image.Width = 15;
 
                     pause_Button.Content = pause_Button_Image;
                 } else notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not load state (paused?)"));

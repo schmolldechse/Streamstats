@@ -42,6 +42,7 @@
         </Style>
 
         <Style x:Key="replayButton" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#030713" />
             <Setter Property="RenderTransform">
                 <Setter.Value>
                     <TranslateTransform />
@@ -55,10 +56,6 @@
                             <TranslateTransform X="2" Y="2" />
                         </Setter.Value>
                     </Setter>
-                </Trigger>
-
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="Transparent" />
                 </Trigger>
             </Style.Triggers>
         </Style>

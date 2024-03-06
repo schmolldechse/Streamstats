@@ -142,14 +142,14 @@
                     CornerRadius="4">
                 <Button Background="Transparent" 
                         BorderThickness="0"
-                        Margin="12 5 12 5"
+                        Margin="12 0 12 0"
                         x:Name="pause_Button"
                         Click="Pause_Button_Click"
                         Style="{DynamicResource controlButtons}">
                     <Image x:Name="pause_Button_Image" 
                            Source="../../Images/Play_Red.ico" 
-                           Height="15"
-                           Width="15" />
+                           Height="20"
+                           Width="20" />
                 </Button>
             </Border>
             
