@@ -212,10 +212,24 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                
+
                             <StackPanel Margin="0 12 0 5" 
                                         Grid.Row="0" 
                                         Orientation="Horizontal">
+                                <Image Source="../../Images/Donation.ico" 
+                                       Height="25"
+                                       Width="25"
+                                       Margin="3 0 0 0"/>
+
+                                <TextBlock Margin="5 4 0 0"
+                                           Text="Username123"
+                                           Foreground="#5BBBA5"
+                                           FontWeight="Bold">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="#5BBBA5" Direction="0" ShadowDepth="0" Opacity="1" />
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                                
                                 <TextBlock Margin="5 0 0 0">
                                     <Border BorderBrush="#212936"
                                             Background="#212936"
@@ -225,26 +239,29 @@
                                                    Margin="15 5 15 5" />
                                     </Border>
                                 </TextBlock>
-                
-                                <TextBlock Margin="10 4 0 0"
-                                           Text="Username123"
-                                           Foreground="#5BBBA5"
-                                           FontWeight="Bold">
-                                    <TextBlock.Effect>
-                                        <DropShadowEffect Color="#5BBBA5" Direction="0" ShadowDepth="0" Opacity="1" />
-                                    </TextBlock.Effect>
-                                </TextBlock>
                             </StackPanel>
-                
-                            <TextBlock Margin="0 10 4 0"  
-                                       Text="123"
-                                       Foreground="Gray"
-                                       FontWeight="Medium" 
-                                       HorizontalAlignment="Right" 
-                                       VerticalAlignment="Top" />
+
+                            <StackPanel Grid.Row="0"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Margin="0 12 4 0">
+
+                                <TextBlock Text="123"
+                                           Foreground="Gray"
+                                           FontWeight="Medium" 
+                                           Margin="0 3 4 0"/>
+                                
+                                <Button Background="Transparent"
+                                        BorderThickness="0">
+                                    <Image Source="../../Images/Replay_Lightgray.ico" 
+                                       Height="20"
+                                       Width="20"/>
+                                </Button>
+                            </StackPanel>
 
                             <WrapPanel Grid.Row="1"
-                                       Margin="3 0 3 5">
+                                       Margin="2 0 3 5">
                                 <RichTextBox IsReadOnly="True"
                                              Background="#030713"
                                              BorderThickness="0"
@@ -254,20 +271,10 @@
                                     </FlowDocument>
                                 </RichTextBox>
                             </WrapPanel>
-                
-                            <Button Grid.Row="1"
-                                    Grid.Column="1"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom"
-                                    Background="Transparent"
-                                    BorderThickness="0">
-                                <Image Source="../../Images/Replay.ico" 
-                                       Height="20"
-                                       Width="20"/>
-                            </Button>
                         </Grid>
                     </StackPanel>
-                </GroupBox> -->
+                </GroupBox> 
+                -->
 
             </StackPanel>
         </ScrollViewer>
@@ -279,11 +286,20 @@
                 Margin="0 0 25 10"
                 Panel.ZIndex="1" 
                 Style="{DynamicResource button_BackToTop}"
-                Foreground="FloralWhite"
-                FontWeight="Bold"
-                Content="⮝ 0 New Events"
-                FontSize="13" 
-                Click="backToTop_Donations_Click"/>
+                Click="backToTop_Donations_Click" >
+            <StackPanel Orientation="Horizontal">
+                <Image x:Name="backToTop_Donations_Image" 
+                       Source="../../Images/BackToTop.ico"
+                       Height="25"
+                       Width="25" />
+                <TextBlock x:Name="backToTop_Donations_TextBlock" 
+                           Foreground="FloralWhite"
+                           FontWeight="Medium" 
+                           FontSize="12"
+                           Text="0 New Events"
+                           Margin="3 4 0 0"/>
+            </StackPanel>
+        </Button>
 
 
         <!-- Splitter -->

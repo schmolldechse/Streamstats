@@ -70,10 +70,10 @@ namespace Streamstats.src.Panels
                 donation_Panel.Children.Insert(0, groupBox);
             }
 
-            // Incoming donations
+            // Something incoming [tip , subscription]
             App.se_service.client.On("event", (data) =>
             {
-                Console.WriteLine($"Received a new donation : {data}");
+                Console.WriteLine($"Incoming event : {data}");
                 handleIncomingDonation(data.ToString());
             });
 
@@ -160,7 +160,7 @@ namespace Streamstats.src.Panels
                     missedDonations++;
 
                     backToTop_Donations.Visibility = Visibility.Visible;
-                    backToTop_Donations.Content = "⮝ " + missedDonations + " New Events";
+                    backToTop_Donations_TextBlock.Text = missedDonations + " New Events";
                 }
             });
         }

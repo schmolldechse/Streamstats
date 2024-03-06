@@ -25,7 +25,8 @@ namespace Streamstats.src.Service
 
         private DispatcherTimer timer;
 
-        private TextBlock? timeAgoBlock;
+        private TextBlock? timeAgo_TextBlock;
+        private Image replay_Image;
 
         private Type type;
 
@@ -41,7 +42,7 @@ namespace Streamstats.src.Service
             this.timer.Interval = TimeSpan.FromSeconds(1);
             this.timer.Tick += (sender, e) =>
             {
-                if (timeAgoBlock != null) timeAgoBlock.Text = timeDifference(_donation.createdAt);
+                if (timeAgo_TextBlock != null) timeAgo_TextBlock.Text = timeDifference(_donation.createdAt);
             };
             this.timer.Start();
         }
@@ -55,18 +56,29 @@ namespace Streamstats.src.Service
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
             //TOP LEFT
             StackPanel topLeft = new StackPanel();
             topLeft.Orientation = Orientation.Horizontal;
             topLeft.Margin = new Thickness(0, 12, 0, 5);
-            Grid.SetRow(topLeft, 0);
+
+            //TOP LEFT | ICON
+            Image icon = new Image();
+            icon.Source = new BitmapImage(new Uri("../../Images/Donation.ico", UriKind.RelativeOrAbsolute));
+            icon.Height = 25;
+            icon.Width = 25;
+            icon.Margin = new Thickness(3, 0, 0, 0);
+
+            //TOP LEFT | USERNAME
+            TextBlock username = new TextBlock();
+            username.Margin = new Thickness(5, 4, 0, 0); //old | 10 4 0 0
+            username.Text = _donation.data.username;
+            username.Foreground = new SolidColorBrush(Color.FromRgb(91, 187, 165));
+            username.FontWeight = FontWeights.Bold;
+            username.Effect = new DropShadowEffect() { Color = Color.FromRgb(91, 187, 165), Direction = 0, ShadowDepth = 0, Opacity = 1 };
 
             //TOP LEFT | AMOUNT
             TextBlock amount_Outer = new TextBlock();
-            amount_Outer.Margin = new Thickness(5, 0, 0, 0);
+            amount_Outer.Margin = new Thickness(8, 0, 0, 0);
 
             Border amount_Border = new Border();
             amount_Border.BorderBrush = new SolidColorBrush(type == Type.HIGHEST ? gold : gray);
@@ -83,49 +95,50 @@ namespace Streamstats.src.Service
             amount_Border.Child = amount_Inner;
             amount_Outer.Inlines.Add(amount_Border);
 
-            //TOP LEFT | USERNAME
-            TextBlock username = new TextBlock();
-            username.Margin = new Thickness(10, 4, 0, 0);
-            username.Text = _donation.data.username;
-            username.Foreground = new SolidColorBrush(Color.FromRgb(91, 187, 165));
-            username.FontWeight = FontWeights.Bold;
-            username.Effect = new DropShadowEffect() { Color = Color.FromRgb(91, 187, 165), Direction = 0, ShadowDepth = 0, Opacity = 1 };
-
             //ADD TO TOP LEFT
-            topLeft.Children.Add(amount_Outer);
+            topLeft.Children.Add(icon);
             topLeft.Children.Add(username);
+            topLeft.Children.Add(amount_Outer);
 
-            //DONATION ... AGO
+            //TOP RIGHT
+            StackPanel topRight = new StackPanel();
+            topRight.Orientation = Orientation.Horizontal;
+            topRight.HorizontalAlignment = HorizontalAlignment.Right;
+            topRight.VerticalAlignment = VerticalAlignment.Top;
+            topRight.Margin = new Thickness(0, 12, 4, 0);
+
+            //TOP RIGHT | DONATION ... TIME_AGO
             TextBlock timeAgo = new TextBlock();
-            timeAgo.Margin = new Thickness(0, 10, 4, 0); //old : 0 16 10 0
+            timeAgo.Margin = new Thickness(0, 3, 4, 0);
             timeAgo.Text = timeDifference(_donation.createdAt);
             timeAgo.Foreground = Brushes.Gray;
             timeAgo.FontWeight = FontWeights.Medium;
-            timeAgo.HorizontalAlignment = HorizontalAlignment.Right;
-            timeAgo.VerticalAlignment = VerticalAlignment.Center;
 
-            timeAgoBlock = timeAgo;
-            //Grid.SetRow(timeAgo, 0);
+            this.timeAgo_TextBlock = timeAgo;
 
-            //REPLAY BUTTON
+            //TOP RIGHT | REPLAY BUTTON
             Button replay = new Button();
-            replay.Margin = new Thickness(0, 0, 5, 5);
-            replay.HorizontalAlignment = HorizontalAlignment.Right;
-            replay.VerticalAlignment = VerticalAlignment.Bottom;
-            replay.Background = new SolidColorBrush((Color) ColorConverter.ConvertFromString("#030713"));
+            replay.Background = Brushes.Transparent;
             replay.BorderThickness = new Thickness(0);
             replay.Style = (Style)App.Current.FindResource("replayButton");
-            Grid.SetRow(replay, 1);
-            Grid.SetColumn(replay, 1);
 
-            //REPLAY BUTTON | IMAGE
+            replay.PreviewMouseDown += Replay_PreviewMouseDown;
+            replay.PreviewMouseUp += Replay_PreviewMouseUp;
+
+            //TOP RIGHT | REPLAY BUTTON | IMAGE
             Image replayIcon = new Image();
-            replayIcon.Source = new BitmapImage(new Uri("../../Images/Replay.ico", UriKind.RelativeOrAbsolute));
+            replayIcon.Source = new BitmapImage(new Uri("../../Images/Replay_Lightgray.ico", UriKind.RelativeOrAbsolute));
             replayIcon.Height = 20;
             replayIcon.Width = 20;
 
+            this.replay_Image = replayIcon;
+
             replay.Content = replayIcon;
             replay.Click += Replay_Click;
+
+            //ADD TO TOP RIGHT
+            topRight.Children.Add(timeAgo);
+            topRight.Children.Add(replay);
 
             //MESSAGE PANEL
             WrapPanel? messagePanel = null;
@@ -133,7 +146,6 @@ namespace Streamstats.src.Service
             {
                 messagePanel = new WrapPanel();
                 messagePanel.Margin = new Thickness(3, 0, 3, 5);
-                Grid.SetRow(messagePanel, 1);
 
                 //MESSAGE PANEL | MESSAGE
                 RichTextBox message = new RichTextBox();
@@ -169,9 +181,15 @@ namespace Streamstats.src.Service
             }
 
             //ADD TO GRID
+            Grid.SetColumn(topLeft, 0);
+            if (messagePanel != null) Grid.SetColumn(messagePanel, 0);
+
+            Grid.SetRow(topLeft, 0);
+            Grid.SetRow(topRight, 0);
+            if (messagePanel != null) Grid.SetRow(messagePanel, 1);
+
             grid.Children.Add(topLeft);
-            grid.Children.Add(timeAgo);
-            //grid.Children.Add(replay);
+            grid.Children.Add(topRight);
             if (messagePanel != null) grid.Children.Add(messagePanel);
 
             //ADD GRID TO STACK PANEL
@@ -187,6 +205,16 @@ namespace Streamstats.src.Service
             groupBox.BorderThickness = new Thickness((type == Type.NORMAL ? 0.4 : 0.7));
 
             return groupBox;
+        }
+
+        private void Replay_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this.replay_Image.Source = new BitmapImage(new Uri("../../Images/Replay_Lightgray.ico", UriKind.RelativeOrAbsolute));
+        }
+
+        private void Replay_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.replay_Image.Source = new BitmapImage(new Uri("../../Images/Replay_Green.ico", UriKind.RelativeOrAbsolute));
         }
 
         private void Replay_Click(object sender, RoutedEventArgs e)

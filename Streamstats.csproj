@@ -10,11 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\BackToTop.ico" />
+    <None Remove="Images\Donation.ico" />
     <None Remove="Images\Muted.ico" />
     <None Remove="Images\Pause.ico" />
     <None Remove="Images\Play.ico" />
     <None Remove="Images\Play_Red.ico" />
-    <None Remove="Images\Replay.ico" />
+    <None Remove="Images\Replay_Green.ico" />
+    <None Remove="Images\Replay_Lightgray.ico" />
     <None Remove="Images\Skip.ico" />
     <None Remove="Images\Unmuted.ico" />
   </ItemGroup>
@@ -29,11 +32,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\BackToTop.ico" />
+    <Resource Include="Images\Donation.ico" />
     <Resource Include="Images\Muted.ico" />
     <Resource Include="Images\Pause.ico" />
     <Resource Include="Images\Play.ico" />
     <Resource Include="Images\Play_Red.ico" />
-    <Resource Include="Images\Replay.ico" />
+    <Resource Include="Images\Replay_Green.ico" />
+    <Resource Include="Images\Replay_Lightgray.ico" />
     <Resource Include="Images\Skip.ico" />
     <Resource Include="Images\Unmuted.ico" />
   </ItemGroup>
