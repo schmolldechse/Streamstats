@@ -4,13 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Streamstats.src.Panels"
-        mc:Ignorable="d"
+        mc:Ignorable="d"       
         Title="Streamstats" 
         MinHeight="600"
         MinWidth="400" 
         Height="950"
         Width="450"
-        Background="#030713">
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Background>
+        <SolidColorBrush Color="#030713"></SolidColorBrush>
+    </Window.Background>
 
     <Window.Resources>
         <Style TargetType="ScrollBar">
@@ -20,8 +24,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ScrollBar">
                         <Grid>
-                            <Border Background="{TemplateBinding Background}" CornerRadius="3" />
-                            <Track Grid.Row="1" x:Name="PART_Track_1" IsDirectionReversed="True">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="4*"/>
+                                <RowDefinition Height="3*"/>
+                            </Grid.RowDefinitions>
+                            <Border Background="{TemplateBinding Background}" CornerRadius="3" Grid.RowSpan="2" />
+                            <Track x:Name="PART_Track_1" IsDirectionReversed="True" Grid.RowSpan="2">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
                                 </Track.DecreaseRepeatButton>
@@ -41,7 +49,7 @@
                                 </Track.IncreaseRepeatButton>
                             </Track>
 
-                            <Track Grid.Row="3" x:Name="PART_Track_2" IsDirectionReversed="True">
+                            <Track x:Name="PART_Track_2" IsDirectionReversed="True" Grid.RowSpan="2">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
                                 </Track.DecreaseRepeatButton>
@@ -127,6 +135,7 @@
             <RowDefinition Height="3" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Control Panel -->
@@ -152,7 +161,7 @@
                            Width="20" />
                 </Button>
             </Border>
-            
+
             <!-- Skip alerts button -->
             <Border Background="#030713"
                     BorderBrush="#212936"
@@ -294,10 +303,11 @@
                        Width="25" />
                 <TextBlock x:Name="backToTop_Donations_TextBlock" 
                            Foreground="FloralWhite"
-                           FontWeight="Medium" 
-                           FontSize="12"
+                           FontWeight="Bold"
+                           FontStyle="Normal"
+                           FontFamily="{StaticResource Ubuntu}"
                            Text="0 New Events"
-                           Margin="3 4 0 0"/>
+                           Margin="3 5 0 0"/>
             </StackPanel>
         </Button>
 
@@ -314,23 +324,106 @@
         <ScrollViewer Grid.Row="3" 
                       VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Disabled"
-                      Margin="2 5 2 0">
-            <StackPanel x:Name="subsriber_panel">
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
-                <TextBlock Text="Text 1" Margin="10" Foreground="White"/>
+                      Margin="2 7 2 2">
+            <StackPanel x:Name="subscriptions_Panel"
+                        Margin="7 5 7 -2"
+                        Orientation="Vertical">
+
+                <!-- groupboxes being added via code -->
+
+                <!-- groupbox example -->
+                <GroupBox Style="{DynamicResource groupBoxWithBorder}"
+                          BorderBrush="#1E222E"
+                          BorderThickness="0.4"
+                          Margin="0 0 0 2">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Margin="0 12 0 5" 
+                                        Grid.Row="0" 
+                                        Orientation="Horizontal">
+                                <Image Source="../../Images/Subscriber.ico" 
+                                       Height="20"
+                                       Width="20"
+                                       Margin="3 -4 0 0"/>
+
+                                <TextBlock Margin="5 4 0 0"
+                                           Text="Voldechse"
+                                           Foreground="#F3AF1C"
+                                           FontWeight="Bold"
+                                           FontStyle="Normal"
+                                           FontFamily="{StaticResource Ubuntu}">
+                                </TextBlock>
+
+                                <TextBlock Margin="5 0 0 0">
+                                    <Border BorderBrush="#212936"
+                                            Background="#212936"
+                                            CornerRadius="10" >
+                                        <TextBlock Text="3 Monate" 
+                                                   Foreground="FloralWhite" 
+                                                   Margin="10 4 10 4"
+                                                   FontWeight="Bold"
+                                                   FontStyle="Normal"
+                                                   FontFamily="{StaticResource Ubuntu}"/>
+                                    </Border>
+                                </TextBlock>
+
+                                <TextBlock Margin="5 0 0 0">
+                                    <Border BorderBrush="#212936"
+                                            Background="#212936"
+                                            CornerRadius="10">
+                                        <TextBlock Text="Prime" 
+                                                   Foreground="FloralWhite" 
+                                                   Margin="10 4 10 4"
+                                                   FontWeight="Bold" 
+                                                   FontStyle="Normal"
+                                                   FontFamily="{StaticResource Ubuntu}"/>
+                                    </Border>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Margin="0 12 4 0">
+
+                                <TextBlock Text="123"
+                                           Foreground="Gray"
+                                           Margin="0 4 4 0"
+                                           FontWeight="Bold"
+                                           FontStyle="Normal"
+                                           FontFamily="{StaticResource Ubuntu}" />
+
+                                <Button Background="Transparent"
+                                        BorderThickness="0">
+                                    <Image Source="../../Images/Replay_Lightgray.ico" 
+                                       Height="20"
+                                       Width="20"/>
+                                </Button>
+                            </StackPanel>
+
+                            <WrapPanel Grid.Row="1"
+                                       Margin="2 0 3 5">
+                                <RichTextBox IsReadOnly="True"
+                                             Background="#030713"
+                                             BorderThickness="0"
+                                             FontWeight="Bold"
+                                             FontStyle="Normal"
+                                             FontFamily="{StaticResource Ubuntu}">
+                                    <FlowDocument>
+                                        <Paragraph Foreground="FloralWhite">yo yo was geht ab</Paragraph>
+                                    </FlowDocument>
+                                </RichTextBox>
+                            </WrapPanel>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+
             </StackPanel>
         </ScrollViewer>
 
@@ -340,11 +433,21 @@
                 VerticalAlignment="Bottom"
                 Margin="0 0 25 10"
                 Panel.ZIndex="1" 
-                Style="{DynamicResource button_BackToTop}"
-                Foreground="FloralWhite"
-                FontWeight="Bold"
-                Content="⮝ 0 New Events"
-                FontSize="13" />
+                Style="{DynamicResource button_BackToTop}">
+            <StackPanel Orientation="Horizontal">
+                <Image x:Name="backToTop_Subscriptions_Image" 
+                       Source="../../Images/BackToTop.ico"
+                       Height="25"
+                       Width="25" />
+                <TextBlock x:Name="backToTop_Subscriptions_TextBlock" 
+                           Foreground="FloralWhite"
+                           FontWeight="Bold"
+                           FontStyle="Normal"
+                           FontFamily="{StaticResource Ubuntu}"
+                           Text="0 New Events"
+                           Margin="3 5 0 0"/>
+            </StackPanel>
+        </Button>
 
         <!-- Dynamic : Top Donation -->
         <StackPanel x:Name="top_Donation"
@@ -353,11 +456,10 @@
 
         <!-- Notification Center -->
         <StackPanel Grid.Row="4"
-                    Panel.ZIndex="2"
+                    Panel.ZIndex="1"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Orientation="Vertical"
-                    x:Name="notificationCenter"
-                    Margin="0 0 15 15" />
+                    x:Name="notificationCenter" />
     </Grid>
 </Window>

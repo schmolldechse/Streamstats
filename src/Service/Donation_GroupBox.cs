@@ -59,7 +59,7 @@ namespace Streamstats.src.Service
             //TOP LEFT
             StackPanel topLeft = new StackPanel();
             topLeft.Orientation = Orientation.Horizontal;
-            topLeft.Margin = new Thickness(0, 12, 0, 5);
+            topLeft.Margin = new Thickness(0, 10, 0, 5);
 
             //TOP LEFT | ICON
             Image icon = new Image();
@@ -78,7 +78,7 @@ namespace Streamstats.src.Service
 
             //TOP LEFT | AMOUNT
             TextBlock amount_Outer = new TextBlock();
-            amount_Outer.Margin = new Thickness(8, 0, 0, 0);
+            amount_Outer.Margin = new Thickness(10, 0, 0, 0);
 
             Border amount_Border = new Border();
             amount_Border.BorderBrush = new SolidColorBrush(type == Type.HIGHEST ? gold : gray);
@@ -89,7 +89,7 @@ namespace Streamstats.src.Service
             amount_Inner.Text = formatCurrency(_donation.data.amount, _donation.data.currency);
             amount_Inner.FontWeight = FontWeights.Bold;
             amount_Inner.Foreground = Brushes.FloralWhite;
-            amount_Inner.Margin = new Thickness(11, 4, 11, 4);
+            amount_Inner.Margin = new Thickness(10, 4, 10, 4);
             //amount_Inner.Effect = new DropShadowEffect() { Color = Colors.White, Direction = 0, ShadowDepth = 0, Opacity = 1 };
 
             amount_Border.Child = amount_Inner;
@@ -105,11 +105,11 @@ namespace Streamstats.src.Service
             topRight.Orientation = Orientation.Horizontal;
             topRight.HorizontalAlignment = HorizontalAlignment.Right;
             topRight.VerticalAlignment = VerticalAlignment.Top;
-            topRight.Margin = new Thickness(0, 12, 4, 0);
+            topRight.Margin = new Thickness(0, 10, 4, 0);
 
             //TOP RIGHT | DONATION ... TIME_AGO
             TextBlock timeAgo = new TextBlock();
-            timeAgo.Margin = new Thickness(0, 3, 4, 0);
+            timeAgo.Margin = new Thickness(0, 4, 4, 0);
             timeAgo.Text = timeDifference(_donation.createdAt);
             timeAgo.Foreground = Brushes.Gray;
             timeAgo.FontWeight = FontWeights.Medium;

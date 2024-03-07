@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -15,7 +10,7 @@ namespace Streamstats.src.Notification
 
         private DispatcherTimer timer;
 
-        public Notification(int seconds, string backgroundColor, string borderColor, string messageColor, string message)
+        public Notification(int seconds, string backgroundColor, string borderColor, string messageColor, string message, Thickness thickness)
         {
             this.timer = new DispatcherTimer();
             this.timer.Interval = TimeSpan.FromSeconds(seconds);
@@ -29,19 +24,43 @@ namespace Streamstats.src.Notification
             this.BorderBrush = new SolidColorBrush((Color) ColorConverter.ConvertFromString(borderColor));
             this.BorderThickness = new Thickness(0.7);
 
-            this.Margin = new Thickness(0, 15, 0, 0);
+            this.Margin = thickness; //login 0 15 15 15 | panel 0 15 0 0
 
+            this.HorizontalAlignment = HorizontalAlignment.Right;
+
+            //STACKPANEL
             StackPanel stackPanel = new StackPanel();
-            stackPanel.VerticalAlignment = VerticalAlignment.Top;
             stackPanel.Margin = new Thickness(10, 8, 10, 5);
+            stackPanel.Orientation = Orientation.Horizontal;
 
-            TextBlock textBlock = new TextBlock();
-            textBlock.Text = message;
-            textBlock.Foreground = new SolidColorBrush((Color) ColorConverter.ConvertFromString(messageColor));
-            textBlock.FontWeight = FontWeights.Medium;
-            textBlock.FontSize = 13;
+            //STACKPANEL | MESSAGE
+            TextBlock messageBlock = new TextBlock();
+            messageBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(messageColor));
+            messageBlock.FontWeight = FontWeights.Bold;
+            messageBlock.FontFamily = (FontFamily)App.Current.FindResource("Ubuntu");
+            messageBlock.Text = message;
+            messageBlock.VerticalAlignment = VerticalAlignment.Center;
 
-            stackPanel.Children.Add(textBlock);
+            //STACKPANEL | DELETE BUTTON
+            Button deleteButton = new Button();
+            deleteButton.Content = "X";
+            deleteButton.FontWeight = FontWeights.Bold;
+            deleteButton.FontFamily = (FontFamily)App.Current.FindResource("Ubuntu");
+            deleteButton.Margin = new Thickness(13, 0, 0, -2);
+            deleteButton.Foreground = Brushes.Black;
+            deleteButton.Background = Brushes.Transparent;
+            deleteButton.BorderThickness = new Thickness(0);
+            deleteButton.HorizontalAlignment = HorizontalAlignment.Right;
+
+            deleteButton.Click += (sender, e) =>
+            {
+                (this.Parent as StackPanel)?.Children.Remove(this);
+                if (this.timer.IsEnabled) this.timer.Stop();
+            };
+
+            stackPanel.Children.Add(messageBlock);
+            stackPanel.Children.Add(deleteButton);
+
             this.Content = stackPanel;
         }
 

@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:Streamstats"
              StartupUri="src/Panels/Login.xaml">
     <Application.Resources>
+        <FontFamily x:Key="Ubuntu">pack://application:,,,/Fonts/Ubuntu/#Ubuntu</FontFamily>
 
         <BorderGapMaskConverter x:Key="BorderGapMaskConverter"/>
         <Style x:Key="groupBoxWithBorder" TargetType="{x:Type GroupBox}">

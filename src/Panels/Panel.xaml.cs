@@ -1,24 +1,13 @@
-﻿using Streamstats.src.Service.Streamelements;
+﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Streamstats.src.Service.Streamelements;
 using Streamstats.src.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Newtonsoft.Json.Linq;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media.Effects;
-using Streamstats.src.Notification;
-using System.Net.Http;
-using Newtonsoft.Json;
 
 namespace Streamstats.src.Panels
 {
@@ -27,7 +16,6 @@ namespace Streamstats.src.Panels
     /// </summary>
     public partial class Panel : Window
     {
-
         private Donation startToMiss_Donation;
         private int missedDonations;
 
@@ -45,7 +33,7 @@ namespace Streamstats.src.Panels
         {
             InitializeComponent();
 
-            notificationCenter.Children.Add(new src.Notification.Notification(7, "#4CAF50", "#388E3C", "#f5f5f5", "Logged in"));
+            notificationCenter.Children.Add(new src.Notification.Notification(7, "#4CAF50", "#388E3C", "#f5f5f5", "Logged in", new Thickness(0, 15, 15, 15)));
 
 
             // Hide back to top donations because there are no donations / subscriptions yet
@@ -222,11 +210,11 @@ namespace Streamstats.src.Panels
         /**
          * Search for groupbox by donation._id
          */
-        private GroupBox byId(string _id) 
+        private GroupBox byId(string _id)
         {
             foreach (var child in donation_Panel.Children)
             {
-                if (child is GroupBox groupBox 
+                if (child is GroupBox groupBox
                     && groupBox.Tag is Donation donation
                     && donation._id == _id)
                 {
@@ -351,7 +339,8 @@ namespace Streamstats.src.Panels
                     }
 
                     pause_Button.Content = pause_Button_Image;
-                } else notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not load state (paused?)"));
+                }
+                else notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not load state (paused?)", new Thickness(0, 15, 15, 15)));
             });
         }
     }

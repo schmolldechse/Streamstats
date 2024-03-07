@@ -1,27 +1,15 @@
-﻿using Streamstats.src.Notification;
-using Streamstats.src.Panels;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
+﻿using System.Windows;
 
-namespace Streamstats
+namespace Streamstats.src.Panels
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Login.xaml
     /// </summary>
     public partial class Login : Window
     {
-
         private bool CURRENTLY_LOGGING_IN = false;
+
+        private Thickness NOTIFICATION_PANEL_THICKNESS = new Thickness(0, 15, 15, 15);
 
         public Login()
         {
@@ -37,11 +25,11 @@ namespace Streamstats
         {
             if (CURRENTLY_LOGGING_IN)
             {
-                notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", "Already logging in. Please wait."));
+                notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Already logging in. Please wait.", NOTIFICATION_PANEL_THICKNESS));
                 return;
             }
 
-            if (textBox_jwtToken.Text.Length > 0 
+            if (textBox_jwtToken.Text.Length > 0
                 && textBox_twitchToken.Text.Length > 0)
             {
                 App.config.jwtToken = textBox_jwtToken.Text;
@@ -54,7 +42,7 @@ namespace Streamstats
             }
             else
             {
-                notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", "Please enter your credentials"));
+                notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Please enter your credentials", NOTIFICATION_PANEL_THICKNESS));
             }
         }
 
@@ -66,18 +54,18 @@ namespace Streamstats
                 if (trys >= 5)
                 {
                     CURRENTLY_LOGGING_IN = false;
-                    notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not log in"));
+                    notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not log in", NOTIFICATION_PANEL_THICKNESS));
                     Console.WriteLine($"Stopped connection after {trys} attemptions");
                     return;
                 }
 
                 trys++;
                 Console.WriteLine("Trying to connect ...");
-                notificationCenter.Children.Add(new Notification(7, "#C80815", "#860111", "#f5f5f5", $"Try to log in.. ({trys} / 5)"));
+                notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", $"Try to log in.. ({trys} / 5)", NOTIFICATION_PANEL_THICKNESS));
 
                 await App.se_service.ConnectSocket();
                 await Task.Delay(2000);
-                
+
                 if (App.se_service.CONNECTED) break;
             } while (!App.se_service.CONNECTED);
 

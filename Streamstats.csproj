@@ -10,6 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Fonts\Ubuntu\Ubuntu-Bold.ttf" />
+    <None Remove="Fonts\Ubuntu\Ubuntu-BoldItalic.ttf" />
+    <None Remove="Fonts\Ubuntu\Ubuntu-Italic.ttf" />
+    <None Remove="Fonts\Ubuntu\Ubuntu-Light.ttf" />
+    <None Remove="Fonts\Ubuntu\Ubuntu-LightItalic.ttf" />
+    <None Remove="Fonts\Ubuntu\Ubuntu-Medium.ttf" />
+    <None Remove="Fonts\Ubuntu\Ubuntu-MediumItalic.ttf" />
+    <None Remove="Fonts\Ubuntu\Ubuntu-Regular.ttf" />
     <None Remove="Images\BackToTop.ico" />
     <None Remove="Images\Donation.ico" />
     <None Remove="Images\Muted.ico" />
@@ -19,7 +27,14 @@
     <None Remove="Images\Replay_Green.ico" />
     <None Remove="Images\Replay_Lightgray.ico" />
     <None Remove="Images\Skip.ico" />
+    <None Remove="Images\Subscriber.ico" />
     <None Remove="Images\Unmuted.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Fonts\Ubuntu\Ubuntu-Light.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +47,27 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Fonts\Ubuntu\Ubuntu-Bold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Ubuntu\Ubuntu-BoldItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Ubuntu\Ubuntu-Italic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Ubuntu\Ubuntu-LightItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Ubuntu\Ubuntu-Medium.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Ubuntu\Ubuntu-MediumItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Fonts\Ubuntu\Ubuntu-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\BackToTop.ico" />
     <Resource Include="Images\Donation.ico" />
     <Resource Include="Images\Muted.ico" />
@@ -41,6 +77,7 @@
     <Resource Include="Images\Replay_Green.ico" />
     <Resource Include="Images\Replay_Lightgray.ico" />
     <Resource Include="Images\Skip.ico" />
+    <Resource Include="Images\Subscriber.ico" />
     <Resource Include="Images\Unmuted.ico" />
   </ItemGroup>
 
