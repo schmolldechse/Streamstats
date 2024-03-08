@@ -42,8 +42,19 @@
             </Setter>
         </Style>
 
-        <Style x:Key="replayButton" TargetType="{x:Type Button}">
+        <Style x:Key="button" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="#030713" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="20">
+                            <ContentPresenter VerticalAlignment="Center"
+                               HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
             <Setter Property="RenderTransform">
                 <Setter.Value>
                     <TranslateTransform />

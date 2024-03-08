@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Streamstats.src.Service.Objects.Types;
+using Streamstats.src.Service.UI;
 
 namespace Streamstats.src.Panels
 {
@@ -17,8 +18,8 @@ namespace Streamstats.src.Panels
     /// </summary>
     public partial class Panel : Window
     {
-        private Donation startToMiss_Donation;
-        private int missedDonations;
+        private Tip startToMiss_Tip;
+        private int missedTips;
 
         private bool ALERTS_PAUSED, ALERTS_MUTED;
 
@@ -55,7 +56,11 @@ namespace Streamstats.src.Panels
                 App.se_service.fetchedSubscriptions.Sort((subscription1, subscription2) => subscription1.activity.createdAt.CompareTo(subscription2?.activity.createdAt));
                 App.se_service.fetchedCheers.Sort((cheer1, cheer2) => cheer1.activity.createdAt.CompareTo(cheer2?.activity.createdAt));
 
-                //TODO: new groupbox mechanic
+                foreach (Tip tip in App.se_service.fetchedDonations)
+                {
+                    GroupBox groupBox = new TipGroupBox(tip, TipGroupBox.Category.NORMAL);
+                    donation_Panel.Children.Insert(0, groupBox);
+                }
             });
 
             /**
@@ -130,12 +135,13 @@ namespace Streamstats.src.Panels
 
         public void handleIncomingDonation(string data)
         {
+            /**
             Application.Current.Dispatcher.Invoke(() =>
             {
                 JArray jArray = JArray.Parse(data);
                 JObject donation = (JObject)jArray.First;
 
-                Donation fetched = App.se_service.fetchDonation(donation);
+                Donation fetched = null;//App.se_service.fetchDonation(donation);
                 //App.se_service.donations.Add(fetched);
 
                 GroupBox groupBox = new Donation_GroupBox(fetched, Donation_GroupBox.Type.NORMAL).create();
@@ -158,9 +164,10 @@ namespace Streamstats.src.Panels
                     backToTop_Donations_TextBlock.Text = missedDonations + " New Events";
                 }
             });
+            **/
         }
 
-        private Donation highest()
+        private Tip highest()
         {
             return null;
             //return App.se_service.donations.OrderByDescending(donation => donation.data.amount).FirstOrDefault();
@@ -205,17 +212,17 @@ namespace Streamstats.src.Panels
         private void backToTop_Donations_Click(object sender, RoutedEventArgs e)
         {
             if (!backToTop_Donations.IsVisible) return;
-            if (startToMiss_Donation == null) return;
-            if (byId(startToMiss_Donation._id) == null) return;
+            if (startToMiss_Tip == null) return;
+            if (byId(startToMiss_Tip.activity.id) == null) return;
 
-            GroupBox groupBox = byId(startToMiss_Donation._id);
+            GroupBox groupBox = byId(startToMiss_Tip.activity.id);
 
             GeneralTransform transform = groupBox.TransformToAncestor(scrollViewer_donationPanel);
             Point position = transform.Transform(new Point(0, 0));
 
             scrollViewer_donationPanel.ScrollToVerticalOffset(scrollViewer_donationPanel.VerticalOffset + (position.Y < 0 ? -Math.Abs(position.Y) : position.Y));
 
-            missedDonations = 0;
+            missedTips = 0;
             backToTop_Donations.Visibility = Visibility.Hidden;
         }
 
@@ -227,8 +234,8 @@ namespace Streamstats.src.Panels
             foreach (var child in donation_Panel.Children)
             {
                 if (child is GroupBox groupBox
-                    && groupBox.Tag is Donation donation
-                    && donation._id == _id)
+                    && groupBox.Tag is Tip tip
+                    && tip.activity.id == _id)
                 {
                     return groupBox;
                 }

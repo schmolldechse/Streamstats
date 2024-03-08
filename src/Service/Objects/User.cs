@@ -12,7 +12,7 @@ namespace Streamstats.src.Service.Objects
         /**
          * Username wo created the activity
          */
-        string username { get; set; }
+        public string username { get; set; }
 
         public User(string username)
         {

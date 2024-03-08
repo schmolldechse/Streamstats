@@ -19,6 +19,7 @@
     <None Remove="Fonts\Ubuntu\Ubuntu-MediumItalic.ttf" />
     <None Remove="Fonts\Ubuntu\Ubuntu-Regular.ttf" />
     <None Remove="Images\BackToTop.ico" />
+    <None Remove="Images\Cheer.ico" />
     <None Remove="Images\Donation.ico" />
     <None Remove="Images\Muted.ico" />
     <None Remove="Images\Pause.ico" />
@@ -69,6 +70,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\BackToTop.ico" />
+    <Resource Include="Images\Cheer.ico" />
     <Resource Include="Images\Donation.ico" />
     <Resource Include="Images\Muted.ico" />
     <Resource Include="Images\Pause.ico" />
