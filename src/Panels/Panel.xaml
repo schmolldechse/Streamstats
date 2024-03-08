@@ -209,10 +209,22 @@
                       Margin="2 1 2 7">
             <StackPanel x:Name="donation_Panel"
                         Margin="7 5 7 -2"
-                        Orientation="Vertical">
+                        Orientation="Vertical"
+                        VerticalAlignment="Center">
+
+                <GroupBox Style="{DynamicResource groupBoxWithBorder}"
+                          BorderThickness="0"
+                          HorizontalAlignment="Center"
+                          x:Name="loading_Donations">
+                    <TextBlock Foreground="LightGray" 
+                               FontFamily="{StaticResource Ubuntu}"
+                               FontWeight="Bold"
+                               Text="Loading ..."
+                               FontSize="28"/>
+                </GroupBox>
 
                 <!-- groupboxes being added via code -->
-
+                
                 <!-- groupbox example
                 <GroupBox Style="{DynamicResource test}">
                     <StackPanel>
@@ -284,8 +296,8 @@
                     </StackPanel>
                 </GroupBox> 
                 -->
-
             </StackPanel>
+            
         </ScrollViewer>
 
         <Button x:Name="backToTop_Donations"

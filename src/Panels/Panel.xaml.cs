@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Streamstats.src.Service.Objects.Types;
 
 namespace Streamstats.src.Panels
 {
@@ -35,29 +36,39 @@ namespace Streamstats.src.Panels
 
             notificationCenter.Children.Add(new src.Notification.Notification(7, "#4CAF50", "#388E3C", "#f5f5f5", "Logged in", new Thickness(0, 15, 15, 15)));
 
-
             // Hide back to top donations because there are no donations / subscriptions yet
             backToTop_Donations.Visibility = Visibility.Hidden;
             backToTop_Subscriptions.Visibility = Visibility.Hidden;
 
             // StreamElements
             App.httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {App.config.jwtToken}");
-            if (App.se_service.CONNECTED) App.se_service.fetchLatestTips();
-
+            this.InitializeSocketEvents();
             this.loadPausedUnpausedState();
 
-            do
+            _ = App.se_service.fetchLatest(7, (done) =>
             {
-                if (App.se_service.FETCHED_DONATIONS) break;
-            } while (!App.se_service.FETCHED_DONATIONS);
-            App.se_service.donations.Sort((donation1, donation2) => donation1.createdAt.CompareTo(donation2.createdAt));
+                donation_Panel.Children.Remove(loading_Donations);
+                donation_Panel.VerticalAlignment = VerticalAlignment.Stretch;
+                loading_Donations = null;
 
-            foreach (Donation donation in App.se_service.donations)
+                App.se_service.fetchedDonations.Sort((tip1, tip2) => tip1.activity.createdAt.CompareTo(tip2?.activity.createdAt));
+                App.se_service.fetchedSubscriptions.Sort((subscription1, subscription2) => subscription1.activity.createdAt.CompareTo(subscription2?.activity.createdAt));
+                App.se_service.fetchedCheers.Sort((cheer1, cheer2) => cheer1.activity.createdAt.CompareTo(cheer2?.activity.createdAt));
+
+                //TODO: new groupbox mechanic
+            });
+
+            /**
+            foreach (Donation donation in App.se_service.fetchedDonations)
             {
                 GroupBox groupBox = new Donation_GroupBox(donation, Donation_GroupBox.Type.NORMAL).create();
                 donation_Panel.Children.Insert(0, groupBox);
             }
+            */
+        }
 
+        private void InitializeSocketEvents()
+        {
             // Something incoming [tip , subscription]
             App.se_service.client.On("event", (data) =>
             {
@@ -125,7 +136,7 @@ namespace Streamstats.src.Panels
                 JObject donation = (JObject)jArray.First;
 
                 Donation fetched = App.se_service.fetchDonation(donation);
-                App.se_service.donations.Add(fetched);
+                //App.se_service.donations.Add(fetched);
 
                 GroupBox groupBox = new Donation_GroupBox(fetched, Donation_GroupBox.Type.NORMAL).create();
                 donation_Panel.Children.Insert(0, groupBox);
@@ -136,7 +147,7 @@ namespace Streamstats.src.Panels
                     top_Donation.Children.Insert(0, new Donation_GroupBox(fetched, Donation_GroupBox.Type.HIGHEST).create());
                 }
 
-                App.se_service.donations.Add(fetched);
+                //App.se_service.donations.Add(fetched);
 
                 if (scrollViewer_donationPanel.VerticalOffset > 20)
                 {
@@ -151,7 +162,8 @@ namespace Streamstats.src.Panels
 
         private Donation highest()
         {
-            return App.se_service.donations.OrderByDescending(donation => donation.data.amount).FirstOrDefault();
+            return null;
+            //return App.se_service.donations.OrderByDescending(donation => donation.data.amount).FirstOrDefault();
         }
 
         /**
@@ -190,7 +202,7 @@ namespace Streamstats.src.Panels
         }
         */
 
-        private async void backToTop_Donations_Click(object sender, RoutedEventArgs e)
+        private void backToTop_Donations_Click(object sender, RoutedEventArgs e)
         {
             if (!backToTop_Donations.IsVisible) return;
             if (startToMiss_Donation == null) return;

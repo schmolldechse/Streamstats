@@ -176,34 +176,6 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Orientation="Vertical"
-                    x:Name="notificationCenter">
-
-            <GroupBox Margin="0 15 15 15"
-                      Style="{DynamicResource groupBoxWithBorder}"
-                      Background="#C80815"
-                      BorderBrush="#860111"
-                      BorderThickness="0.7">
-
-                <StackPanel Margin="10 8 10 5"
-                            Orientation="Horizontal">
-
-                    <TextBlock Foreground="#f5f5f5"
-                           FontWeight="Bold"
-                           FontFamily="{StaticResource Ubuntu}"
-                           Text="yoyoyooy"
-                           VerticalAlignment="Center" />
-
-                    <Button Content="X"
-                            FontFamily="{StaticResource Ubuntu}"
-                            FontWeight="Bold"
-                            Margin="13 0 0 -2" 
-                            Foreground="Black"
-                            Background="Transparent"
-                            BorderThickness="0"/>
-
-                </StackPanel>
-            </GroupBox>
-            
-        </StackPanel>
+                    x:Name="notificationCenter" />
     </Grid>
 </Window>

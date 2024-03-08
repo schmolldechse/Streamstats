@@ -58,9 +58,11 @@ namespace Streamstats.src.Notification
                 if (this.timer.IsEnabled) this.timer.Stop();
             };
 
+            //ADD TO STACKPANEL
             stackPanel.Children.Add(messageBlock);
             stackPanel.Children.Add(deleteButton);
 
+            //FINAL
             this.Content = stackPanel;
         }
 
