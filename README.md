@@ -1,7 +1,7 @@
 
 # Streamstats
 
-This program provides a convenient interface to monitor recent activities on twitch streams. It displays the latest donations received via StreamElements and the most recent subscriptions through the Twitch API. Additionally, users can utilize the program to pause or mute donation alerts via the API.
+This program provides a convenient interface to monitor recent activities on twitch streams. It displays the latest donations, subscriptions & cheers (received on twitch) received via StreamElements. Additionally, users can utilize the program to pause, mute or skip alerts via the API.
 
 
 ## Authors
@@ -11,10 +11,10 @@ This program provides a convenient interface to monitor recent activities on twi
 
 ## ToDo List
 
-- [] include Twitch API
 - [X] pause button
 - [X] mute button
-- [] search field for messages 
-- [] hyperlinks clickable
+- [X] hyperlinks clickable
 - [X] "X New Events" Button on the bottom right corner, if current view (VerticalOffset) of ScrollViewer is not on the top
 - [X] replay donations 
+- [] search field for messages, usernames
+- [] 
