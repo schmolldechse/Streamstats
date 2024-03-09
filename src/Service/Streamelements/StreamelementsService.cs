@@ -28,7 +28,7 @@ namespace Streamstats.src.Service.Streamelements
 
         public StreamelementsService()
         {
-            fetched = new Dictionary<Activity, object>();
+            this.fetched = new Dictionary<Activity, object>();
         }
 
         public async Task ConnectSocket(Action<bool, string?> callback)
@@ -76,6 +76,9 @@ namespace Streamstats.src.Service.Streamelements
          */
         public async Task fetchLatest(int goBack, Action<bool> done)
         {
+            Console.WriteLine("Start fetching");
+            long startToFetch = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
             DateTime current = DateTime.Now;
             DateTime start = current.AddDays(-goBack);
 
@@ -106,26 +109,16 @@ namespace Streamstats.src.Service.Streamelements
                 await Task.Delay(150);
             }
 
-            Console.WriteLine($"Fetched {fetchedObjects.Count} objects. Continue to deserialize them...");
+            Console.WriteLine($"Fetched {fetchedObjects.Count} objects in the last {goBack} (+ today) days. Continue to deserialize them...");
 
             foreach (JObject document in fetchedObjects)
             {
                 fetchType(document, (result) => {  });
             }
 
-            int donations = 0, 
-                subscriptions = 0,
-                cheers = 0;
+            long endToFetch = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            Console.WriteLine($"Done! Needed {endToFetch - startToFetch} ms");
 
-            foreach (object fetchedObject in fetched)
-            {
-                if (fetchedObject == null) continue;
-                else if (fetchedObject is Tip) donations++;
-                else if (fetchedObject is Subscription) subscriptions++;
-                else if (fetchedObject is Cheer) cheers++;
-            }
-
-            Console.WriteLine($"Fetched {donations} donations, {subscriptions} subscriptions and {cheers} cheers in the last {goBack}(+1) days");
             done?.Invoke(true);
         }
 

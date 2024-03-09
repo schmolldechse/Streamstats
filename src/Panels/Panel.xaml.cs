@@ -56,7 +56,7 @@ namespace Streamstats.src.Panels
                 donation_Panel.VerticalAlignment = VerticalAlignment.Stretch;
                 loading_Donations = null;
 
-                App.se_service.fetched.OrderByDescending(activity => activity.Key.createdAt);
+                App.se_service.fetched = App.se_service.fetched.OrderBy(kvp => kvp.Key.createdAt).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
                 foreach (var kvp in App.se_service.fetched)
                 {
@@ -391,6 +391,7 @@ namespace Streamstats.src.Panels
                     Console.WriteLine($"Received state : {responseContent}");
 
                     ALERTS_PAUSED = (bool)jsonObject["paused"];
+                    ALERTS_MUTED = (bool)jsonObject["muted"];
                     switch (ALERTS_PAUSED)
                     {
                         case true:
@@ -402,9 +403,21 @@ namespace Streamstats.src.Panels
                             break;
                     }
 
+                    switch (ALERTS_MUTED)
+                    {
+                        case true:
+                            mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Muted.ico", UriKind.RelativeOrAbsolute));
+                            break;
+
+                        case false:
+                            mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Unmuted.ico", UriKind.RelativeOrAbsolute));
+                            break;
+                    }
+
                     pause_Button.Content = pause_Button_Image;
+                    mute_Button.Content = mute_Button_Image;
                 }
-                else notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not load state (paused?)", new Thickness(0, 15, 15, 15)));
+                else notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not load state", new Thickness(0, 15, 15, 15)));
             });
         }
     }
