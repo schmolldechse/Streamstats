@@ -69,15 +69,15 @@ namespace Streamstats.src.Service.UI
 
             // Top left | icon
             Image icon = new Image();
-            icon.Source = new BitmapImage(new Uri("../../Images/Cheer.ico", UriKind.RelativeOrAbsolute));
+            icon.Source = new BitmapImage(new Uri("../../Images/Donation.ico", UriKind.RelativeOrAbsolute));
             icon.Height = 20;
             icon.Width = 20;
-            icon.Margin = new Thickness(3, -4, 0, 0);
+            icon.Margin = new Thickness(3, 0, 0, 0); //check top
             icon.VerticalAlignment = VerticalAlignment.Center;
 
             // Top left | username
             TextBlock username = new TextBlock();
-            username.Margin = new Thickness(5, 0, 0, 0);
+            username.Margin = new Thickness(5, 0, 0, 0); //check top
             username.Text = _tip.user.username;
             username.Foreground = new SolidColorBrush(Color.FromRgb(91, 187, 165));
             username.VerticalAlignment = VerticalAlignment.Center;

@@ -114,28 +114,40 @@ namespace Streamstats.src.Service.Streamelements
 
             foreach (JObject document in fetchedObjects)
             {
-                fetchType(document);
+                fetchType(document, (result) => {  });
             }
 
             Console.WriteLine($"Fetched {fetchedDonations.Count} donations, {fetchedSubscriptions.Count} subscriptions and {fetchedCheers.Count} cheers in the last {goBack}(+1) days");
             done?.Invoke(true);
         }
 
-        public void fetchType(JObject document)
+        public void fetchType(JObject document, Action<object> result)
         {
             if (document == null) throw new ArgumentNullException(nameof(document));
 
             string type = GetOrDefault<string>(document, "type");
-            if (string.IsNullOrEmpty(type)) throw new ArgumentNullException("Type is missing or invalid.", nameof(document));
+            if (string.IsNullOrEmpty(type))
+            {
+                result.Invoke(null);
+                throw new ArgumentNullException("Type is missing or invalid.", nameof(document));
+            }
 
             string username = GetOrDefault<string>(document["data"], "username");
-            if (string.IsNullOrEmpty(username)) throw new ArgumentNullException("Username is missing or invalid.", nameof(document));
+            if (string.IsNullOrEmpty(username))
+            {
+                result.Invoke(null);
+                throw new ArgumentNullException("Username is missing or invalid.", nameof(document));
+            }
             User user = new User(username);
 
             DateTime createdAt = GetOrDefault<DateTime>(document, "createdAt");
             string provider = GetOrDefault<string>(document, "provider");
             string channel = GetOrDefault<string>(document, "channel");
-            if (string.IsNullOrEmpty(provider) || string.IsNullOrEmpty(channel)) throw new ArgumentException("Provider or channel is missing or invalid.", nameof(document));
+            if (string.IsNullOrEmpty(provider) || string.IsNullOrEmpty(channel))
+            {
+                result.Invoke(null);
+                throw new ArgumentException("Provider or channel is missing or invalid.", nameof(document));
+            }
             Activity activity = new Activity(createdAt, provider, channel, type, GetOrDefault<string>(document, "_id"));
 
 
@@ -147,15 +159,25 @@ namespace Streamstats.src.Service.Streamelements
                 case "tip":
                     string tipId = GetOrDefault<string>(document["data"], "tipId");
                     string currency = GetOrDefault<string>(document["data"], "currency");
-                    if (string.IsNullOrEmpty(tipId) || string.IsNullOrEmpty(currency)) throw new ArgumentException("TipId or Amount is missing or invalid.", nameof(document));
+                    if (string.IsNullOrEmpty(tipId) || string.IsNullOrEmpty(currency))
+                    {
+                        result.Invoke(null);
+                        throw new ArgumentException("TipId or Amount is missing or invalid.", nameof(document));
+                    }
 
                     Tip tip = new Tip(tipId, amount, currency, message, activity, user);
-                    this.fetchedDonations.Add(tip); 
+                    this.fetchedDonations.Add(tip);
+
+                    result.Invoke(tip);
                     break;
 
                 case "subscriber":
                     string tier = GetOrDefault<string>(document["data"], "tier");
-                    if (string.IsNullOrEmpty(tier)) throw new ArgumentException("Tier is missing or invalid.", nameof(document));
+                    if (string.IsNullOrEmpty(tier))
+                    {
+                        result.Invoke(null);
+                        throw new ArgumentException("Tier is missing or invalid.", nameof(document));
+                    }
 
                     bool gifted = GetOrDefault<bool>(document["data"], "gifted");
 
@@ -167,14 +189,19 @@ namespace Streamstats.src.Service.Streamelements
 
                     Subscription subscription = new Subscription((int) amount, tier, message, gifted, activity, user, (sender != null ? sender : null));
                     this.fetchedSubscriptions.Add(subscription);
+
+                    result.Invoke(subscription);
                     break;
 
                 case "cheer":
                     Cheer cheer = new Cheer((int) amount, message, activity, user);
                     this.fetchedCheers.Add(cheer);
+
+                    result.Invoke(cheer);
                     break;
 
                 default:
+                    result.Invoke(null);
                     throw new ArgumentException("Unknown type.", nameof(document));
             }
         }

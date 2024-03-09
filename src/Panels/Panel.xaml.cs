@@ -62,14 +62,6 @@ namespace Streamstats.src.Panels
                     donation_Panel.Children.Insert(0, groupBox);
                 }
             });
-
-            /**
-            foreach (Donation donation in App.se_service.fetchedDonations)
-            {
-                GroupBox groupBox = new Donation_GroupBox(donation, Donation_GroupBox.Type.NORMAL).create();
-                donation_Panel.Children.Insert(0, groupBox);
-            }
-            */
         }
 
         private void InitializeSocketEvents()
@@ -78,7 +70,7 @@ namespace Streamstats.src.Panels
             App.se_service.client.On("event", (data) =>
             {
                 Console.WriteLine($"Incoming event : {data}");
-                handleIncomingDonation(data.ToString());
+                handleIncoming(data.ToString());
             });
 
             // Receiving an update (pause/unpause)
@@ -133,8 +125,56 @@ namespace Streamstats.src.Panels
             });
         }
 
-        public void handleIncomingDonation(string data)
+        public void handleIncoming(string data)
         {
+            JArray jArray = JArray.Parse(data);
+            JObject document = (JObject)jArray.First;
+
+            if (document["type"] == null) throw new ArgumentException("Type is missing or invalid.", nameof(document));
+
+            App.se_service.fetchType(document, (result =>
+            {
+                if (result == null)
+                {
+                    Console.WriteLine("Could not fetch incoming data");
+                    return;
+                }
+
+                App.Current.Dispatcher.Invoke(async () =>
+                {
+                    if (result is Subscription subscription)
+                    {
+                        // do smth.
+                    }
+                    else if (result is Tip tip)
+                    {
+                        GroupBox groupBox = new TipGroupBox(tip, TipGroupBox.Category.NORMAL);
+                        this.donation_Panel.Children.Insert(0, groupBox);
+
+                        if (tip.amount >= this.highest().amount)
+                        {
+                            this.top_Donation.Children.Clear();
+                            this.top_Donation.Children.Insert(0, new TipGroupBox(tip, TipGroupBox.Category.HIGHEST));
+                        }
+
+                        if (scrollViewer_donationPanel.VerticalOffset > 20)
+                        {
+                            if (this.missedTips == 0) startToMiss_Tip = tip;
+                            missedTips++;
+
+                            backToTop_Donations.Visibility = Visibility.Visible;
+                            backToTop_Donations_TextBlock.Text = missedTips + " New Events";
+                        }
+
+                        Console.WriteLine($"Fetched incoming as tip. Total : {App.se_service.fetchedDonations.Count}");
+                    }
+                    else if (result is Cheer cheer)
+                    {
+                        // do smth.
+                    }
+                });
+            }));
+
             /**
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -169,8 +209,7 @@ namespace Streamstats.src.Panels
 
         private Tip highest()
         {
-            return null;
-            //return App.se_service.donations.OrderByDescending(donation => donation.data.amount).FirstOrDefault();
+            return App.se_service.fetchedDonations.OrderByDescending(tip => tip.amount).FirstOrDefault();
         }
 
         /**
