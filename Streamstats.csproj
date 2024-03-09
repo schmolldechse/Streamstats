@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>Artboard-1.ico</ApplicationIcon>
+    <ApplicationIcon>Images\Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Artboard-1.ico" />
+    <Resource Include="Images\Logo.ico" />
   </ItemGroup>
 
   <ItemGroup>

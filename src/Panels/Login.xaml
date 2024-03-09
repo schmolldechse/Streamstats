@@ -110,51 +110,45 @@
 
     <Grid x:Name="grid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="2*" />
             <RowDefinition Height="6*" />
+            <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="1"
                     Orientation="Vertical"
-                    Margin="0 35 0 0">
+                    VerticalAlignment="Center"
+                    Margin="0 0 0 0">
 
-            <Image Source="../../Images/Artboard-1.ico" 
+            <Image Source="../../Images/Logo.ico" 
                    Height="100"
-                   Width="100"/>
+                   Width="100"
+                   Margin="0 0 0 10"/>
 
             <TextBlock Text="Streamstats"
                        Foreground="FloralWhite"
-                       FontSize="32"
-                       FontWeight="Medium" 
+                       FontSize="40" 
+                       FontFamily="{StaticResource Ubuntu}"
+                       FontWeight="Bold"
                        HorizontalAlignment="Center" />
 
-            <TextBlock Text="Enter your StreamElements JWT Token and your Twitch Key to continue"
+            <TextBlock Text="Enter your StreamElements JWT Token to continue"
                        Foreground="LightGray"
                        FontSize="12"
-                       FontWeight="Medium"
+                       FontFamily="{StaticResource Ubuntu}"
+                       FontWeight="Bold"
                        TextWrapping="Wrap"
                        TextAlignment="Center" 
-                       Margin="50 3 50 0"/>
+                       Margin="50 0 50 0"/>
 
             <TextBlock Text="StreamElements JWT Token"
                        Foreground="DarkGray"
                        FontSize="12"
-                       FontWeight="Medium"
+                       FontWeight="Bold"
+                       FontFamily="{StaticResource Ubuntu}"
                        Margin="35 50 35 0" />
 
             <TextBox x:Name="textBox_jwtToken" 
-                     Style="{DynamicResource tokenStyle}"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Top"
-                     Margin="30 7 30 0"/>
-
-            <TextBlock Text="Twitch Token"
-                       Foreground="DarkGray"
-                       FontSize="12"
-                       FontWeight="Medium"
-                       Margin="35 30 35 0" />
-
-            <TextBox x:Name="textBox_twitchToken" 
                      Style="{DynamicResource tokenStyle}"
                      HorizontalAlignment="Stretch"
                      VerticalAlignment="Top"
@@ -164,10 +158,11 @@
                     BorderThickness="0"
                     Content="Login"
                     Foreground="FloralWhite"
-                    FontSize="12"
+                    FontSize="18"
                     FontWeight="Bold"
+                    FontFamily="{StaticResource Ubuntu}"
                     Cursor="Hand"
-                    Margin="50 60 50 0"
+                    Margin="50 100 50 0"
                     Style="{DynamicResource login}"/>
         </StackPanel>
 

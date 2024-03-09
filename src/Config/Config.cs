@@ -11,7 +11,6 @@ namespace Streamstats.src.Config
     public class Config
     {
         public string jwtToken { get; set; }
-        public string twitchToken { get; set; }
 
         private readonly string path = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "config.json");
 

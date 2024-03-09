@@ -17,7 +17,6 @@ namespace Streamstats.src.Panels
             InitializeComponent();
 
             if (App.config.jwtToken != null && App.config.jwtToken.Length > 0) textBox_jwtToken.Text = App.config.jwtToken;
-            if (App.config.twitchToken != null && App.config.twitchToken.Length > 0) textBox_twitchToken.Text = App.config.twitchToken;
 
             button_Login.Click += Button_Login;
         }
@@ -30,14 +29,13 @@ namespace Streamstats.src.Panels
                 return;
             }
 
-            if (textBox_jwtToken.Text.Length <= 0 || textBox_twitchToken.Text.Length <= 0)
+            if (textBox_jwtToken.Text.Length <= 0)
             {
                 notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Please enter your credentials", NOTIFICATION_PANEL_THICKNESS));
                 return;
             }
 
             App.config.jwtToken = textBox_jwtToken.Text;
-            App.config.twitchToken = textBox_twitchToken.Text;
             App.config.save();
 
             connect();
