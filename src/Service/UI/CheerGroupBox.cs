@@ -12,52 +12,47 @@ using System.Windows.Threading;
 
 namespace Streamstats.src.Service.UI
 {
-    public class TipGroupBox : GroupBox
+    public class CheerGroupBox : GroupBox
     {
 
         private readonly string STREAMELEMENTS_REPLAY_API = "https://api.streamelements.com/kappa/v2/activities/{0}/{1}/replay";
 
-        public Tip _tip;
-        public Category _category;
+        public Cheer _cheer;
 
         private DispatcherTimer timer;
 
         private TextBlock timeAgo_TextBlock;
         private Image replay_Image;
 
-        private Color gold = Color.FromRgb(90, 83, 54);
-        private Color gray = Color.FromRgb(33, 41, 54);
-
-        public TipGroupBox(Tip tip, Category category) 
+        public CheerGroupBox(Cheer cheer) 
         {
-            if (tip == null)
+            if (cheer == null)
             {
-                throw new ArgumentException("Tip is null or invalid");
+                throw new ArgumentException("Cheer is null or invalid");
             }
 
-            this._tip = tip;
-            this._category = category;
+            this._cheer = cheer;
 
             // Initializing timer
             this.timer = new DispatcherTimer();
             this.timer.Interval = TimeSpan.FromSeconds(1);
             this.timer.Tick += (sender, e) =>
             {
-                if (this.timeAgo_TextBlock != null) this.timeAgo_TextBlock.Text = this.timeDifference(this._tip.activity.createdAt);
+                if (this.timeAgo_TextBlock != null) this.timeAgo_TextBlock.Text = this.timeDifference(this._cheer.activity.createdAt);
             };
             this.timer.Start();
 
             // Initializing groupbox
-            this.Margin = new Thickness( (this._category == Category.NORMAL ? 0 : 7), 0, (this._category == Category.NORMAL ? 0 : 10), (this._category == Category.NORMAL ? 4 : 6) );
+            this.Margin = new Thickness(0, 0, 0, 4);
             this.Style = (Style)App.Current.FindResource("groupBoxWithBorder");
 
             this.FontFamily = (FontFamily)App.Current.FindResource("Ubuntu");
             this.FontWeight = FontWeights.Bold;
 
-            this.Tag = this._tip;
+            this.Tag = this._cheer;
 
-            this.BorderBrush = new SolidColorBrush((Color) ColorConverter.ConvertFromString( (this._category == Category.NORMAL ? "#1E222E" : "#5A5336") ));
-            this.BorderThickness = new Thickness( (this._category == Category.NORMAL ? 0.4 : 0.7) );
+            this.BorderBrush = new SolidColorBrush((Color) ColorConverter.ConvertFromString("#1E222E"));
+            this.BorderThickness = new Thickness(0.4);
 
             // Initializing content of groupbox
             StackPanel content = new StackPanel();
@@ -74,7 +69,7 @@ namespace Streamstats.src.Service.UI
 
             // Top left | icon
             Image icon = new Image();
-            icon.Source = new BitmapImage(new Uri("../../Images/Donation.ico", UriKind.RelativeOrAbsolute));
+            icon.Source = new BitmapImage(new Uri("../../Images/Cheer.ico", UriKind.RelativeOrAbsolute));
             icon.Height = 20;
             icon.Width = 20;
             icon.Margin = new Thickness(3, 0, 0, 0);
@@ -83,8 +78,8 @@ namespace Streamstats.src.Service.UI
             // Top left | username
             TextBlock username = new TextBlock();
             username.Margin = new Thickness(5, 0, 0, 0);
-            username.Text = _tip.user.username;
-            username.Foreground = new SolidColorBrush(Color.FromRgb(91, 187, 165));
+            username.Text = this._cheer.user.username;
+            username.Foreground = new SolidColorBrush(Color.FromRgb(130, 98, 168));
             username.VerticalAlignment = VerticalAlignment.Center;
 
             // Top left | amount
@@ -92,12 +87,12 @@ namespace Streamstats.src.Service.UI
             amount_Outer.Margin = new Thickness(5, 0, 0, 0);
 
             Border amount_Border = new Border();
-            amount_Border.BorderBrush = new SolidColorBrush(this._category == Category.HIGHEST ? this.gold : this.gray);
-            amount_Border.Background = new SolidColorBrush(this._category == Category.HIGHEST ? this.gold : this.gray);
+            amount_Border.BorderBrush = new SolidColorBrush(Color.FromRgb(33, 41, 54));
+            amount_Border.Background = new SolidColorBrush(Color.FromRgb(33, 41, 54));
             amount_Border.CornerRadius = new CornerRadius(10);
 
             TextBlock amount_Inner = new TextBlock();
-            amount_Inner.Text = formatCurrency(this._tip.amount, this._tip.currency);
+            amount_Inner.Text = this._cheer.amount + " Bits";
             amount_Inner.Margin = new Thickness(10, 4, 10, 4);
             amount_Inner.Foreground = Brushes.FloralWhite;
 
@@ -120,7 +115,7 @@ namespace Streamstats.src.Service.UI
             TextBlock timeAgo = new TextBlock();
             timeAgo.Margin = new Thickness(0, 0, 4, 0);
             timeAgo.VerticalAlignment = VerticalAlignment.Center;
-            timeAgo.Text = timeDifference(this._tip.activity.createdAt);
+            timeAgo.Text = timeDifference(this._cheer.activity.createdAt);
             timeAgo.Foreground = Brushes.Gray;
 
             this.timeAgo_TextBlock = timeAgo;
@@ -158,7 +153,7 @@ namespace Streamstats.src.Service.UI
 
             // Message panel
             WrapPanel? messagePanel = null;
-            if (this._tip.message.Length > 0)
+            if (this._cheer.message.Length > 0)
             {
                 messagePanel = new WrapPanel();
                 messagePanel.Margin = new Thickness(3, 0, 3, 5);
@@ -173,7 +168,7 @@ namespace Streamstats.src.Service.UI
                 Paragraph paragraph = new Paragraph();
                 paragraph.Foreground = Brushes.FloralWhite;
 
-                foreach (string segment in this._tip.message.Split(' '))
+                foreach (string segment in this._cheer.message.Split(' '))
                 {
                     if (Uri.IsWellFormedUriString(segment, UriKind.Absolute))
                     {
@@ -220,23 +215,11 @@ namespace Streamstats.src.Service.UI
                             {
                                 using StringContent jsonContent = new StringContent("", Encoding.UTF8, "application/json");
 
-                                using HttpResponseMessage responseMessage = await App.httpClient.PostAsync(string.Format(STREAMELEMENTS_REPLAY_API, App.se_service.channelId, _tip.activity.id), jsonContent);
+                                using HttpResponseMessage responseMessage = await App.httpClient.PostAsync(string.Format(STREAMELEMENTS_REPLAY_API, App.se_service.channelId, this._cheer.activity.id), jsonContent);
                                 var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
 
                                 Console.WriteLine($"Sent http request : {jsonResponse}");
                             });
-        }
-
-        private string formatCurrency(decimal amount, string currency)
-        {
-            string a = amount % 1 == 0 ? $"{amount}" : $"{amount: 0.00}";
-            string b = currency switch
-            {
-                "EUR" => a + " €",
-                "USD" => "$ " + a,
-                _ => a + currency
-            };
-            return b;
         }
 
         private string timeDifference(DateTime past)
@@ -260,13 +243,5 @@ namespace Streamstats.src.Service.UI
                 return $"{(int)difference.TotalDays} d";
             }
         }
-
-
-        public enum Category
-        {
-            NORMAL,
-            HIGHEST,
-        }
-
     }
 }

@@ -12,6 +12,8 @@ using Streamstats.src.Service.Objects.Types;
 using Streamstats.src.Service.UI;
 using System.Windows.Input;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
+using System;
 
 namespace Streamstats.src.Panels
 {
@@ -39,7 +41,7 @@ namespace Streamstats.src.Panels
 
             notificationCenter.Children.Add(new src.Notification.Notification(7, "#4CAF50", "#388E3C", "#f5f5f5", "Logged in", new Thickness(0, 15, 15, 15)));
 
-            // Hide back to top donations because there are no donations / subscriptions yet
+            // Hide back to top buttons because there are no donations / subscriptions / cheers yet
             backToTop_Donations.Visibility = Visibility.Hidden;
             backToTop_Subscriptions.Visibility = Visibility.Hidden;
 
@@ -54,14 +56,30 @@ namespace Streamstats.src.Panels
                 donation_Panel.VerticalAlignment = VerticalAlignment.Stretch;
                 loading_Donations = null;
 
-                App.se_service.fetchedDonations.Sort((tip1, tip2) => tip1.activity.createdAt.CompareTo(tip2?.activity.createdAt));
-                App.se_service.fetchedSubscriptions.Sort((subscription1, subscription2) => subscription1.activity.createdAt.CompareTo(subscription2?.activity.createdAt));
-                App.se_service.fetchedCheers.Sort((cheer1, cheer2) => cheer1.activity.createdAt.CompareTo(cheer2?.activity.createdAt));
+                App.se_service.fetched.OrderByDescending(activity => activity.Key.createdAt);
 
-                foreach (Tip tip in App.se_service.fetchedDonations)
+                foreach (var kvp in App.se_service.fetched)
                 {
-                    GroupBox groupBox = new TipGroupBox(tip, TipGroupBox.Category.NORMAL);
-                    donation_Panel.Children.Insert(0, groupBox);
+                    if (kvp.Key == null) continue;
+                    if (kvp.Value == null) continue;
+
+                    switch (kvp.Value) 
+                    {
+                        case Tip tip:
+                            donation_Panel.Children.Insert(0, new TipGroupBox(tip, TipGroupBox.Category.NORMAL));
+                            break;
+
+                        case Subscription subscription:
+                            // do smth.
+                            break;
+
+                        case Cheer cheer:
+                            donation_Panel.Children.Insert(0, new CheerGroupBox(cheer));
+                            break;
+
+                        default:
+                            throw new ArgumentException("Key is invalid");
+                    }
                 }
             });
         }
@@ -168,7 +186,7 @@ namespace Streamstats.src.Panels
                             backToTop_Donations_TextBlock.Text = missedTips + " New Events";
                         }
 
-                        Console.WriteLine($"Fetched incoming as tip. Total : {App.se_service.fetchedDonations.Count}");
+                        Console.WriteLine($"Fetched incoming as tip. Total : {App.se_service.fetched.Count}");
                     }
                     else if (result is Cheer cheer)
                     {
@@ -180,7 +198,9 @@ namespace Streamstats.src.Panels
 
         private Tip highest()
         {
-            return App.se_service.fetchedDonations.OrderByDescending(tip => tip.amount).FirstOrDefault();
+            var tips = App.se_service.fetched.Values.OfType<Tip>();
+            var highest = tips.OrderBy(tip => tip.amount).FirstOrDefault();
+            return highest;
         }
 
         private void Scroll_Donation_Panel(object sender, ScrollChangedEventArgs e)
@@ -189,9 +209,9 @@ namespace Streamstats.src.Panels
             if (!(e.ExtentHeightChange == 0 && e.ExtentWidthChange == 0)) return;
 
             if (startToMiss_Tip == null) return;
-            if (byId(startToMiss_Tip.activity.id) == null) return; 
+            if (ById(startToMiss_Tip.activity.id) == null) return; 
 
-            GroupBox groupBox = byId(startToMiss_Tip.activity.id);
+            GroupBox groupBox = ById(startToMiss_Tip.activity.id);
 
             GeneralTransform transform = groupBox.TransformToVisual(scrollViewer_donationPanel);
             Point topLeft = transform.Transform(new Point(0, 0));
@@ -222,9 +242,9 @@ namespace Streamstats.src.Panels
         {
             if (!backToTop_Donations.IsVisible) return;
             if (startToMiss_Tip == null) return;
-            if (byId(startToMiss_Tip.activity.id) == null) return;
+            if (ById(startToMiss_Tip.activity.id) == null) return;
 
-            GroupBox groupBox = byId(startToMiss_Tip.activity.id);
+            GroupBox groupBox = ById(startToMiss_Tip.activity.id);
 
             GeneralTransform transform = groupBox.TransformToVisual(scrollViewer_donationPanel);
             Point topLeft = transform.Transform(new Point(0, 0));
@@ -242,9 +262,9 @@ namespace Streamstats.src.Panels
         }
 
         /**
-         * Search for groupbox by donation._id
+         * Search for groupbox by tip._id
          */
-        private GroupBox byId(string _id)
+        private GroupBox ById(string _id)
         {
             foreach (var child in donation_Panel.Children)
             {
@@ -259,6 +279,9 @@ namespace Streamstats.src.Panels
             return null;
         }
 
+        /**
+         * Returns the groupbox before the provided one, or null
+         */
         private GroupBox? Next(GroupBox groupBox)
         {
             int currentIndex = this.donation_Panel.Children.IndexOf(groupBox);

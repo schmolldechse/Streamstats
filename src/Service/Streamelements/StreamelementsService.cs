@@ -20,9 +20,7 @@ namespace Streamstats.src.Service.Streamelements
         public readonly string STREAMELEMENTS_ACTIVITIES_API = "https://api.streamelements.com/kappa/v2/activities/{0}";
         private readonly string REQUEST_TYPES = "[\"tip\",\"subscriber\",\"cheer\"]";
 
-        public List<Tip> fetchedDonations;
-        public List<Subscription> fetchedSubscriptions;
-        public List<Cheer> fetchedCheers;
+        public Dictionary<Activity, object> fetched;
 
         public string channelId = "";
 
@@ -30,9 +28,7 @@ namespace Streamstats.src.Service.Streamelements
 
         public StreamelementsService()
         {
-            fetchedDonations = new List<Tip>();
-            fetchedSubscriptions = new List<Subscription>();
-            fetchedCheers = new List<Cheer>();
+            fetched = new Dictionary<Activity, object>();
         }
 
         public async Task ConnectSocket(Action<bool, string?> callback)
@@ -117,7 +113,19 @@ namespace Streamstats.src.Service.Streamelements
                 fetchType(document, (result) => {  });
             }
 
-            Console.WriteLine($"Fetched {fetchedDonations.Count} donations, {fetchedSubscriptions.Count} subscriptions and {fetchedCheers.Count} cheers in the last {goBack}(+1) days");
+            int donations = 0, 
+                subscriptions = 0,
+                cheers = 0;
+
+            foreach (object fetchedObject in fetched)
+            {
+                if (fetchedObject == null) continue;
+                else if (fetchedObject is Tip) donations++;
+                else if (fetchedObject is Subscription) subscriptions++;
+                else if (fetchedObject is Cheer) cheers++;
+            }
+
+            Console.WriteLine($"Fetched {donations} donations, {subscriptions} subscriptions and {cheers} cheers in the last {goBack}(+1) days");
             done?.Invoke(true);
         }
 
@@ -166,7 +174,7 @@ namespace Streamstats.src.Service.Streamelements
                     }
 
                     Tip tip = new Tip(tipId, amount, currency, message, activity, user);
-                    this.fetchedDonations.Add(tip);
+                    this.fetched.Add(activity, tip);
 
                     result.Invoke(tip);
                     break;
@@ -188,14 +196,14 @@ namespace Streamstats.src.Service.Streamelements
                     }
 
                     Subscription subscription = new Subscription((int) amount, tier, message, gifted, activity, user, (sender != null ? sender : null));
-                    this.fetchedSubscriptions.Add(subscription);
+                    this.fetched.Add(activity, subscription);
 
                     result.Invoke(subscription);
                     break;
 
                 case "cheer":
                     Cheer cheer = new Cheer((int) amount, message, activity, user);
-                    this.fetchedCheers.Add(cheer);
+                    this.fetched.Add(activity, cheer);
 
                     result.Invoke(cheer);
                     break;
