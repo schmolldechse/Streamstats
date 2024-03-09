@@ -47,9 +47,6 @@ namespace Streamstats.src.Panels
 
             // StreamElements
             App.httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {App.config.jwtToken}");
-            this.InitializeSocketEvents();
-            this.loadPausedUnpausedState();
-
             _ = App.se_service.fetchLatest(7, (done) =>
             {
                 donation_Panel.Children.Remove(loading_Donations);
@@ -81,6 +78,9 @@ namespace Streamstats.src.Panels
                             throw new ArgumentException("Key is invalid");
                     }
                 }
+
+                this.InitializeSocketEvents();
+                this.loadPausedUnpausedState();
             });
         }
 
@@ -377,7 +377,7 @@ namespace Streamstats.src.Panels
 
 
         /**
-         * Loads current state of donations [paused, unpause]
+         * Loads current state of donations [paused / unpaused, muted / unmuted]
          */
         private void loadPausedUnpausedState()
         {
@@ -392,30 +392,15 @@ namespace Streamstats.src.Panels
 
                     ALERTS_PAUSED = (bool)jsonObject["paused"];
                     ALERTS_MUTED = (bool)jsonObject["muted"];
-                    switch (ALERTS_PAUSED)
+
+                    App.Current.Dispatcher.Invoke(() =>
                     {
-                        case true:
-                            pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Play_Red.ico", UriKind.RelativeOrAbsolute));
-                            break;
+                        pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/" + (this.ALERTS_PAUSED ? "Play_Red.ico" : "Pause.ico"), UriKind.RelativeOrAbsolute));
+                        pause_Button.Content = pause_Button_Image;
 
-                        case false:
-                            pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Pause.ico", UriKind.RelativeOrAbsolute));
-                            break;
-                    }
-
-                    switch (ALERTS_MUTED)
-                    {
-                        case true:
-                            mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Muted.ico", UriKind.RelativeOrAbsolute));
-                            break;
-
-                        case false:
-                            mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Unmuted.ico", UriKind.RelativeOrAbsolute));
-                            break;
-                    }
-
-                    pause_Button.Content = pause_Button_Image;
-                    mute_Button.Content = mute_Button_Image;
+                        mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/" + (this.ALERTS_MUTED ? "Muted.ico" : "Unmuted.ico"), UriKind.RelativeOrAbsolute));
+                        mute_Button.Content = mute_Button_Image;
+                    });
                 }
                 else notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not load state", new Thickness(0, 15, 15, 15)));
             });
