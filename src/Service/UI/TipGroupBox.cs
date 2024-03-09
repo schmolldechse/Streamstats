@@ -72,12 +72,12 @@ namespace Streamstats.src.Service.UI
             icon.Source = new BitmapImage(new Uri("../../Images/Donation.ico", UriKind.RelativeOrAbsolute));
             icon.Height = 20;
             icon.Width = 20;
-            icon.Margin = new Thickness(3, 0, 0, 0); //check top
+            icon.Margin = new Thickness(3, 0, 0, 0);
             icon.VerticalAlignment = VerticalAlignment.Center;
 
             // Top left | username
             TextBlock username = new TextBlock();
-            username.Margin = new Thickness(5, 0, 0, 0); //check top
+            username.Margin = new Thickness(5, 0, 0, 0);
             username.Text = _tip.user.username;
             username.Foreground = new SolidColorBrush(Color.FromRgb(91, 187, 165));
             username.VerticalAlignment = VerticalAlignment.Center;

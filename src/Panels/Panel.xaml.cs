@@ -10,6 +10,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Streamstats.src.Service.Objects.Types;
 using Streamstats.src.Service.UI;
+using System.Windows.Input;
+using System.Windows.Controls.Primitives;
 
 namespace Streamstats.src.Panels
 {
@@ -174,37 +176,6 @@ namespace Streamstats.src.Panels
                     }
                 });
             }));
-
-            /**
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                JArray jArray = JArray.Parse(data);
-                JObject donation = (JObject)jArray.First;
-
-                Donation fetched = null;//App.se_service.fetchDonation(donation);
-                //App.se_service.donations.Add(fetched);
-
-                GroupBox groupBox = new Donation_GroupBox(fetched, Donation_GroupBox.Type.NORMAL).create();
-                donation_Panel.Children.Insert(0, groupBox);
-
-                if (fetched.data.amount >= highest().data.amount)
-                {
-                    top_Donation.Children.Clear();
-                    top_Donation.Children.Insert(0, new Donation_GroupBox(fetched, Donation_GroupBox.Type.HIGHEST).create());
-                }
-
-                //App.se_service.donations.Add(fetched);
-
-                if (scrollViewer_donationPanel.VerticalOffset > 20)
-                {
-                    if (missedDonations == 0) startToMiss_Donation = fetched;
-                    missedDonations++;
-
-                    backToTop_Donations.Visibility = Visibility.Visible;
-                    backToTop_Donations_TextBlock.Text = missedDonations + " New Events";
-                }
-            });
-            **/
         }
 
         private Tip highest()
@@ -212,41 +183,40 @@ namespace Streamstats.src.Panels
             return App.se_service.fetchedDonations.OrderByDescending(tip => tip.amount).FirstOrDefault();
         }
 
-        /**
-         * fix
-        private void Scroll_Donations(object sender, ScrollChangedEventArgs e)
+        private void Scroll_Donation_Panel(object sender, ScrollChangedEventArgs e)
         {
-            if (startToMiss_Donation == null) return;
-            if (byId(startToMiss_Donation._id) == null) return; 
+            // Only interactions with mouse wheel are allowed
+            if (!(e.ExtentHeightChange == 0 && e.ExtentWidthChange == 0)) return;
 
-            GroupBox groupBox = byId(startToMiss_Donation._id);
+            if (startToMiss_Tip == null) return;
+            if (byId(startToMiss_Tip.activity.id) == null) return; 
 
-            GeneralTransform transform = groupBox.TransformToAncestor(scrollViewer_donationPanel);
-            Point position = transform.Transform(new Point(0, 0));
+            GroupBox groupBox = byId(startToMiss_Tip.activity.id);
 
-            if (Math.Sign(position.Y - previousY_Donation) != 0
-                && backToTop_Donations.IsVisible)
+            GeneralTransform transform = groupBox.TransformToVisual(scrollViewer_donationPanel);
+            Point topLeft = transform.Transform(new Point(0, 0));
+            Point bottomRight = transform.Transform(new Point(groupBox.ActualWidth, groupBox.ActualHeight));
+
+            bool visible = topLeft.Y >= 0 && bottomRight.Y <= scrollViewer_donationPanel.ActualHeight;
+            if (visible)
             {
-                missedDonations--;
-                backToTop_Donations.Content = "⮝ " + missedDonations + " New Events";
-
-                if (missedDonations == 0) backToTop_Donations.Visibility = Visibility.Hidden;
-
-                if (donation_Panel.Children.IndexOf(groupBox) > 0)
+                if (missedTips > 0)
                 {
-                    GroupBox newer_GroupBox = donation_Panel.Children[donation_Panel.Children.IndexOf(groupBox) - 1] as GroupBox;
-                    if (newer_GroupBox == null) return;
+                    missedTips--;
+                    backToTop_Donations_TextBlock.Text = missedTips + " New Events";
 
-                    Donation newer_Donation = newer_GroupBox.Tag as Donation;
-                    if (newer_Donation == null) return;
-
-                    startToMiss_Donation = newer_Donation;
+                    if (missedTips == 0) backToTop_Donations.Visibility = Visibility.Hidden;
                 }
-            }
 
-            previousY_Donation = position.Y;
+                GroupBox next = Next(groupBox);
+                if (next == null) return;
+
+                Tip nextTip = next.Tag as Tip;
+                if (nextTip == null) return;
+
+                startToMiss_Tip = nextTip;
+            }
         }
-        */
 
         private void backToTop_Donations_Click(object sender, RoutedEventArgs e)
         {
@@ -256,13 +226,19 @@ namespace Streamstats.src.Panels
 
             GroupBox groupBox = byId(startToMiss_Tip.activity.id);
 
-            GeneralTransform transform = groupBox.TransformToAncestor(scrollViewer_donationPanel);
-            Point position = transform.Transform(new Point(0, 0));
+            GeneralTransform transform = groupBox.TransformToVisual(scrollViewer_donationPanel);
+            Point topLeft = transform.Transform(new Point(0, 0));
+            Point bottomRight = transform.Transform(new Point(groupBox.ActualWidth, groupBox.ActualHeight));
 
-            scrollViewer_donationPanel.ScrollToVerticalOffset(scrollViewer_donationPanel.VerticalOffset + (position.Y < 0 ? -Math.Abs(position.Y) : position.Y));
+            scrollViewer_donationPanel.ScrollToVerticalOffset(scrollViewer_donationPanel.VerticalOffset + (topLeft.Y < 0 ? -Math.Abs(topLeft.Y) : topLeft.Y));
 
-            missedTips = 0;
-            backToTop_Donations.Visibility = Visibility.Hidden;
+            if (missedTips > 0)
+            {
+                missedTips--;
+                backToTop_Donations_TextBlock.Text = missedTips + " New Events";
+
+                if (missedTips == 0) backToTop_Donations.Visibility = Visibility.Hidden;
+            }
         }
 
         /**
@@ -280,6 +256,13 @@ namespace Streamstats.src.Panels
                 }
             }
 
+            return null;
+        }
+
+        private GroupBox? Next(GroupBox groupBox)
+        {
+            int currentIndex = this.donation_Panel.Children.IndexOf(groupBox);
+            if (currentIndex != -1 && currentIndex > 0) return this.donation_Panel.Children[currentIndex - 1] as GroupBox;
             return null;
         }
 
