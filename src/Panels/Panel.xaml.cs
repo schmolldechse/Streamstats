@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using System;
+using Streamstats.src.Service.Objects;
 
 namespace Streamstats.src.Panels
 {
@@ -22,12 +23,21 @@ namespace Streamstats.src.Panels
     /// </summary>
     public partial class Panel : Window
     {
+        /**
+         * 1. missed tip
+         * amount of missed tips
+         */
         private Tip startToMiss_Tip;
         private int missedTips;
 
-        private bool ALERTS_PAUSED, ALERTS_MUTED;
+        /**
+         * 1. missed subscription
+         * amount of missed subscriptions
+         */
+        private Subscription startToMiss_Subscription;
+        private int missedSubs;
 
-        //private double previousY_Donation;
+        private bool ALERTS_PAUSED, ALERTS_MUTED;
 
         /**
          * {0} represents channelId
@@ -49,9 +59,13 @@ namespace Streamstats.src.Panels
             App.httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {App.config.jwtToken}");
             _ = App.se_service.fetchLatest(7, (done) =>
             {
-                donation_Panel.Children.Remove(loading_Donations);
-                donation_Panel.VerticalAlignment = VerticalAlignment.Stretch;
-                loading_Donations = null;
+                this.donation_Panel.Children.Remove(this.loading_Donations);
+                this.donation_Panel.VerticalAlignment = VerticalAlignment.Stretch;
+                this.loading_Donations = null;
+
+                this.subscriptions_Panel.Children.Remove(this.loading_Subscriptions);
+                this.subscriptions_Panel.VerticalAlignment = VerticalAlignment.Stretch;
+                this.loading_Subscriptions = null;
 
                 App.se_service.fetched = App.se_service.fetched.OrderBy(kvp => kvp.Key.createdAt).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
@@ -67,7 +81,7 @@ namespace Streamstats.src.Panels
                             break;
 
                         case Subscription subscription:
-                            // do smth.
+                            subscriptions_Panel.Children.Insert(0, new SubscriptionGroupBox(subscription));
                             break;
 
                         case Cheer cheer:
@@ -164,7 +178,19 @@ namespace Streamstats.src.Panels
                 {
                     if (result is Subscription subscription)
                     {
-                        // do smth.
+                        GroupBox groupBox = new SubscriptionGroupBox(subscription);
+                        this.subscriptions_Panel.Children.Add(groupBox);
+
+                        if (scrollViewer_subscriberPanel.VerticalOffset > 20)
+                        {
+                            if (this.missedSubs == 0) startToMiss_Subscription = subscription;
+                            missedSubs++;
+
+                            backToTop_Subscriptions.Visibility = Visibility.Visible;
+                            backToTop_Subscriptions_TextBlock.Text = missedSubs + " New Events";
+                        }
+
+                        Console.WriteLine($"Fetched incoming as subscription. Total : {App.se_service.fetched.Count}");
                     }
                     else if (result is Tip tip)
                     {
@@ -190,7 +216,10 @@ namespace Streamstats.src.Panels
                     }
                     else if (result is Cheer cheer)
                     {
-                        // do smth.
+                        GroupBox groupBox = new CheerGroupBox(cheer);
+                        this.donation_Panel.Children.Insert(0, groupBox);
+
+                        Console.WriteLine($"Fetched incoming as cheer. Total : {App.se_service.fetched.Count}");
                     }
                 });
             }));
@@ -203,73 +232,151 @@ namespace Streamstats.src.Panels
             return highest;
         }
 
+        /**
+         * Manages scrolling within ScrollViewer
+         * If the user scrolls to the first missed subscription, count of 'missedSubs' will decrease & the next GroupBox (or the one which is before the current one) will be targetted
+         * explaining 10/10
+         */
+        private void Scroll_Subscriber_Panel(object sender, ScrollChangedEventArgs e)
+        {
+            // Only interactions with mouse wheel are allowed
+            if (!(e.ExtentHeightChange == 0 && e.ExtentWidthChange == 0)) return;
+
+            if (this.startToMiss_Subscription == null) return;
+            if (this.ById_SubscriberPanel(this.startToMiss_Subscription.activity.id) == null) return;
+
+            GroupBox groupBox = this.ById_SubscriberPanel(this.startToMiss_Subscription.activity.id);
+
+            GeneralTransform transform = groupBox.TransformToVisual(this.scrollViewer_subscriberPanel);
+            Point topLeft = transform.Transform(new Point(0, 0));
+            Point bottomRight = transform.Transform(new Point(groupBox.ActualWidth, groupBox.ActualHeight));
+
+            bool visible = topLeft.Y >= 0 && bottomRight.Y <= this.scrollViewer_subscriberPanel.ActualHeight;
+            if (visible)
+            {
+                if (this.missedSubs > 0)
+                {
+                    this.missedSubs--;
+                    this.backToTop_Subscriptions_TextBlock.Text = this.missedSubs + " New Events";
+
+                    if (this.missedSubs == 0) this.backToTop_Subscriptions.Visibility = Visibility.Hidden;
+                }
+
+                GroupBox next = Next_SubscriberPanel(groupBox);
+                if (next == null) return;
+
+                Subscription nextSub = next.Tag as Subscription;
+                if (nextSub == null) return;
+
+                this.startToMiss_Subscription = nextSub;
+            }
+        }
+
+
+        /**
+         * If the user clicks on the button, ScrollViewer will scroll to the 1. missed donation/ cheer. In addition, the GroupBox which is before the current one, will be targetted
+         * explaining 10/10
+         */
+        private void backToTop_Subscribers_Click(object sender, RoutedEventArgs e)
+        {
+            if (!this.backToTop_Subscriptions.IsVisible) return;
+            if (this.startToMiss_Subscription == null) return;
+            if (this.ById_SubscriberPanel(this.startToMiss_Subscription.activity.id) == null) return;
+
+            GroupBox groupBox = this.ById_SubscriberPanel(this.startToMiss_Subscription.activity.id);
+
+            GeneralTransform transform = groupBox.TransformToVisual(this.scrollViewer_subscriberPanel);
+            Point topLeft = transform.Transform(new Point(0, 0));
+            Point bottomRight = transform.Transform(new Point(groupBox.ActualWidth, groupBox.ActualHeight));
+
+            this.scrollViewer_subscriberPanel.ScrollToVerticalOffset(this.scrollViewer_subscriberPanel.VerticalOffset + (topLeft.Y < 0 ? -Math.Abs(topLeft.Y) : topLeft.Y));
+
+            if (this.missedSubs > 0)
+            {
+                this.missedSubs--;
+                this.backToTop_Subscriptions_TextBlock.Text = this.missedSubs + " New Events";
+
+                if (this.missedSubs == 0) this.backToTop_Subscriptions.Visibility = Visibility.Hidden;
+            }
+        }
+
+        /**
+         * Manages scrolling within ScrollViewer
+         * If the user scrolls to the first missed donation/ cheer, count of 'missedTips' will decrease & the next GroupBox (or the one which is before the current one) will be targetted
+         * explaining 10/10
+         */
         private void Scroll_Donation_Panel(object sender, ScrollChangedEventArgs e)
         {
             // Only interactions with mouse wheel are allowed
             if (!(e.ExtentHeightChange == 0 && e.ExtentWidthChange == 0)) return;
 
-            if (startToMiss_Tip == null) return;
-            if (ById(startToMiss_Tip.activity.id) == null) return; 
+            if (this.startToMiss_Tip == null) return;
+            if (this.ById_DonationPanel(this.startToMiss_Tip.activity.id) == null) return; 
 
-            GroupBox groupBox = ById(startToMiss_Tip.activity.id);
+            GroupBox groupBox = this.ById_DonationPanel(this.startToMiss_Tip.activity.id);
 
-            GeneralTransform transform = groupBox.TransformToVisual(scrollViewer_donationPanel);
+            GeneralTransform transform = groupBox.TransformToVisual(this.scrollViewer_donationPanel);
             Point topLeft = transform.Transform(new Point(0, 0));
             Point bottomRight = transform.Transform(new Point(groupBox.ActualWidth, groupBox.ActualHeight));
 
-            bool visible = topLeft.Y >= 0 && bottomRight.Y <= scrollViewer_donationPanel.ActualHeight;
+            bool visible = topLeft.Y >= 0 && bottomRight.Y <= this.scrollViewer_donationPanel.ActualHeight;
             if (visible)
             {
-                if (missedTips > 0)
+                if (this.missedTips > 0)
                 {
-                    missedTips--;
-                    backToTop_Donations_TextBlock.Text = missedTips + " New Events";
+                    this.missedTips--;
+                    this.backToTop_Donations_TextBlock.Text = this.missedTips + " New Events";
 
-                    if (missedTips == 0) backToTop_Donations.Visibility = Visibility.Hidden;
+                    if (this.missedTips == 0) this.backToTop_Donations.Visibility = Visibility.Hidden;
                 }
 
-                GroupBox next = Next(groupBox);
+                GroupBox next = Next_DonationPanel(groupBox);
                 if (next == null) return;
 
                 Tip nextTip = next.Tag as Tip;
                 if (nextTip == null) return;
 
-                startToMiss_Tip = nextTip;
+                this.startToMiss_Tip = nextTip;
             }
         }
 
+
+        /**
+         * If the user clicks on the button, ScrollViewer will scroll to the 1. missed donation/ cheer. In addition, the GroupBox which is before the current one, will be targetted
+         * explaining 10/10
+         */
         private void backToTop_Donations_Click(object sender, RoutedEventArgs e)
         {
-            if (!backToTop_Donations.IsVisible) return;
-            if (startToMiss_Tip == null) return;
-            if (ById(startToMiss_Tip.activity.id) == null) return;
+            if (!this.backToTop_Donations.IsVisible) return;
+            if (this.startToMiss_Tip == null) return;
+            if (this.ById_DonationPanel(this.startToMiss_Tip.activity.id) == null) return;
 
-            GroupBox groupBox = ById(startToMiss_Tip.activity.id);
+            GroupBox groupBox = this.ById_DonationPanel(this.startToMiss_Tip.activity.id);
 
-            GeneralTransform transform = groupBox.TransformToVisual(scrollViewer_donationPanel);
+            GeneralTransform transform = groupBox.TransformToVisual(this.scrollViewer_donationPanel);
             Point topLeft = transform.Transform(new Point(0, 0));
             Point bottomRight = transform.Transform(new Point(groupBox.ActualWidth, groupBox.ActualHeight));
 
-            scrollViewer_donationPanel.ScrollToVerticalOffset(scrollViewer_donationPanel.VerticalOffset + (topLeft.Y < 0 ? -Math.Abs(topLeft.Y) : topLeft.Y));
+            this.scrollViewer_donationPanel.ScrollToVerticalOffset(this.scrollViewer_donationPanel.VerticalOffset + (topLeft.Y < 0 ? -Math.Abs(topLeft.Y) : topLeft.Y));
 
-            if (missedTips > 0)
+            if (this.missedTips > 0)
             {
-                missedTips--;
-                backToTop_Donations_TextBlock.Text = missedTips + " New Events";
+                this.missedTips--;
+                this.backToTop_Donations_TextBlock.Text = this.missedTips + " New Events";
 
-                if (missedTips == 0) backToTop_Donations.Visibility = Visibility.Hidden;
+                if (this.missedTips == 0) this.backToTop_Donations.Visibility = Visibility.Hidden;
             }
         }
 
         /**
-         * Search for groupbox by tip._id
+         * Search for groupbox by tip._id in subscriptions_Panel
          */
-        private GroupBox ById(string _id)
+        private GroupBox ById_SubscriberPanel(string _id)
         {
-            foreach (var child in donation_Panel.Children)
+            foreach (var child in this.subscriptions_Panel.Children)
             {
                 if (child is GroupBox groupBox
-                    && groupBox.Tag is Tip tip
+                    && groupBox.Tag is Subscription tip
                     && tip.activity.id == _id)
                 {
                     return groupBox;
@@ -280,9 +387,37 @@ namespace Streamstats.src.Panels
         }
 
         /**
-         * Returns the groupbox before the provided one, or null
+         * Returns the groupbox before the provided one, or null in subscriptions_Panel
          */
-        private GroupBox? Next(GroupBox groupBox)
+        private GroupBox? Next_SubscriberPanel(GroupBox groupBox)
+        {
+            int currentIndex = this.subscriptions_Panel.Children.IndexOf(groupBox);
+            if (currentIndex != -1 && currentIndex > 0) return this.subscriptions_Panel.Children[currentIndex - 1] as GroupBox;
+            return null;
+        }
+
+        /**
+         * Search for groupbox by tip._id in donation_Panel
+         */
+        private GroupBox ById_DonationPanel(string _id)
+        {
+            foreach (var child in this.donation_Panel.Children)
+            {
+                if (child is GroupBox groupBox
+                    && (groupBox.Tag is Tip tip && tip.activity != null && tip.activity.id == _id
+                || groupBox.Tag is Cheer cheer && cheer.activity != null && cheer.activity.id == _id))
+                {
+                    return groupBox;
+                }
+            }
+
+            return null;
+        }
+
+        /**
+         * Returns the groupbox before the provided one, or null in donation_Panel
+         */
+        private GroupBox? Next_DonationPanel(GroupBox groupBox)
         {
             int currentIndex = this.donation_Panel.Children.IndexOf(groupBox);
             if (currentIndex != -1 && currentIndex > 0) return this.donation_Panel.Children[currentIndex - 1] as GroupBox;

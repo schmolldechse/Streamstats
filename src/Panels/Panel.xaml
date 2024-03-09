@@ -310,10 +310,25 @@
         <ScrollViewer Grid.Row="3" 
                       VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Disabled"
-                      Margin="2 7 2 2">
+                      x:Name="scrollViewer_subscriberPanel"
+                      Margin="2 7 2 2"
+                      ScrollChanged="Scroll_Subscriber_Panel">
             <StackPanel x:Name="subscriptions_Panel"
                         Margin="7 5 7 -2"
-                        Orientation="Vertical">
+                        Orientation="Vertical"
+                        VerticalAlignment="Center">
+
+                <!-- Loading, removing after loaded -->
+                <GroupBox Style="{DynamicResource groupBoxWithBorder}"
+                          BorderThickness="0"
+                          HorizontalAlignment="Center"
+                          x:Name="loading_Subscriptions">
+                    <TextBlock Foreground="LightGray" 
+                               FontFamily="{StaticResource Ubuntu}"
+                               FontWeight="Bold"
+                               Text="Loading ..."
+                               FontSize="28"/>
+                </GroupBox>
 
                 <!-- groupboxes being added via code -->
 
@@ -411,7 +426,8 @@
                 VerticalAlignment="Bottom"
                 Margin="0 0 25 10"
                 Panel.ZIndex="1" 
-                Style="{DynamicResource button_BackToTop}">
+                Style="{DynamicResource button_BackToTop}"
+                Click="backToTop_Subscribers_Click" >
             <StackPanel Orientation="Horizontal">
                 <Image x:Name="backToTop_Subscriptions_Image" 
                        Source="../../Images/BackToTop.ico"

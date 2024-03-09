@@ -11,13 +11,6 @@
 
   <ItemGroup>
     <None Remove="Fonts\Ubuntu\Ubuntu-Bold.ttf" />
-    <None Remove="Fonts\Ubuntu\Ubuntu-BoldItalic.ttf" />
-    <None Remove="Fonts\Ubuntu\Ubuntu-Italic.ttf" />
-    <None Remove="Fonts\Ubuntu\Ubuntu-Light.ttf" />
-    <None Remove="Fonts\Ubuntu\Ubuntu-LightItalic.ttf" />
-    <None Remove="Fonts\Ubuntu\Ubuntu-Medium.ttf" />
-    <None Remove="Fonts\Ubuntu\Ubuntu-MediumItalic.ttf" />
-    <None Remove="Fonts\Ubuntu\Ubuntu-Regular.ttf" />
     <None Remove="Images\BackToTop.ico" />
     <None Remove="Images\Cheer.ico" />
     <None Remove="Images\Donation.ico" />
@@ -33,12 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Fonts\Ubuntu\Ubuntu-Light.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Artboard-1.ico" />
   </ItemGroup>
 
@@ -49,24 +36,6 @@
 
   <ItemGroup>
     <Resource Include="Fonts\Ubuntu\Ubuntu-Bold.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\Ubuntu\Ubuntu-BoldItalic.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\Ubuntu\Ubuntu-Italic.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\Ubuntu\Ubuntu-LightItalic.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\Ubuntu\Ubuntu-Medium.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\Ubuntu\Ubuntu-MediumItalic.ttf">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Fonts\Ubuntu\Ubuntu-Regular.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\BackToTop.ico" />
