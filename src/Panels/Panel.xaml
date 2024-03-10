@@ -105,7 +105,7 @@
 
         <!-- Control Panel -->
         <DockPanel Grid.Row="0"
-                   Margin="9 7 9 4"
+                   Margin="9 7 9 7"
                    x:Name="top_ControlPanel">
 
             <!-- Pause / Unpause alerts button -->
@@ -164,10 +164,11 @@
                 </Button>
             </Border>
 
-            <TextBox Text="test"
+            <TextBlock Text="Search"
                      HorizontalAlignment="Right"
                      VerticalAlignment="Center"
-                     Foreground="FloralWhite"/>
+                     Foreground="FloralWhite"
+                     Background="Transparent"/>
         </DockPanel>
 
         <!-- Donation Panel -->

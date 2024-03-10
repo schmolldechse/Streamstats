@@ -17,13 +17,13 @@
     </Window.Background>
 
     <Window.Resources>
-        <SolidColorBrush x:Key="Background" Color="FloralWhite" />
+        <SolidColorBrush x:Key="Background" Color="#030713" />
 
-        <SolidColorBrush x:Key="TextColor" Color="Black" />
+        <SolidColorBrush x:Key="TextColor" Color="FloralWhite" />
         <SolidColorBrush x:Key="BorderColor" Color="#333742" />
 
         <!-- Inputfield -->
-        <Style x:Key="tokenStyle" TargetType="{x:Type TextBox}">
+        <Style x:Key="tokenStyle" TargetType="{x:Type PasswordBox}">
             <Setter Property="Background" Value="{DynamicResource Background}" />
             <Setter Property="BorderThickness" Value="3" />
             <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
@@ -41,9 +41,8 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Border x:Name="txtBorder"
-                                Background="{TemplateBinding Background}"
+                    <ControlTemplate TargetType="{x:Type PasswordBox}">
+                        <Border Background="{TemplateBinding Background}"
                                 CornerRadius="5"
                                 MaxHeight="{TemplateBinding MaxHeight}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
@@ -55,30 +54,8 @@
                                       HorizontalScrollBarVisibility="Hidden"
                                       VerticalScrollBarVisibility="Hidden"
                                       Margin="-2 3"/>
-                                <Label x:Name="WaterMarkerLabel"
-                                       Content="{TemplateBinding Tag}"
-                                       FontWeight="{TemplateBinding FontWeight}"
-                                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                       HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                                       Visibility="Collapsed"
-                                       Foreground="{TemplateBinding Foreground}" 
-                                       Padding="{TemplateBinding Padding}" />
                             </Grid>
                         </Border>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="Text" Value="" />
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Visibility" TargetName="WaterMarkerLabel" Value="Visible" />
-                            </MultiTrigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
-                            </Trigger>
-                            <Trigger Property="IsKeyboardFocused" Value="True">
-                                <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -86,7 +63,7 @@
 
         <!-- Login Button -->
         <Style x:Key="login" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="#A656E9" />
+            <Setter Property="Background" Value="#6D28D9" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -102,7 +79,7 @@
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#7F3F9E" />
+                    <Setter Property="Background" Value="#A656E9" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -132,27 +109,31 @@
                        FontWeight="Bold"
                        HorizontalAlignment="Center" />
 
-            <TextBlock Text="Enter your StreamElements JWT Token to continue"
-                       Foreground="LightGray"
+            <TextBlock Foreground="LightGray"
                        FontSize="12"
                        FontFamily="{StaticResource Ubuntu}"
                        FontWeight="Bold"
                        TextWrapping="Wrap"
                        TextAlignment="Center" 
-                       Margin="50 0 50 0"/>
+                       Margin="60 0 50 0" >
+                Enter your StreamElements JWT-Token to continue. You can find it on the 
+                <Hyperlink NavigateUri="https://streamelements.com/dashboard/account/channels"
+                           Foreground="#6D28D9">account page</Hyperlink>
+                in the dashboard
+            </TextBlock>
 
-            <TextBlock Text="StreamElements JWT Token"
+            <TextBlock Text="StreamElements JWT-Token"
                        Foreground="DarkGray"
                        FontSize="12"
                        FontWeight="Bold"
                        FontFamily="{StaticResource Ubuntu}"
                        Margin="35 50 35 0" />
 
-            <TextBox x:Name="textBox_jwtToken" 
+            <PasswordBox x:Name="textBox_jwtToken" 
                      Style="{DynamicResource tokenStyle}"
                      HorizontalAlignment="Stretch"
                      VerticalAlignment="Top"
-                     Margin="30 7 30 0"/>
+                     Margin="30 7 30 0" />
 
             <Button x:Name="button_Login"
                     BorderThickness="0"
