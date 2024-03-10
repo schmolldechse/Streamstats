@@ -29,33 +29,13 @@
                                 <RowDefinition Height="3*"/>
                             </Grid.RowDefinitions>
                             <Border Background="{TemplateBinding Background}" CornerRadius="3" Grid.RowSpan="2" />
-                            <Track x:Name="PART_Track_1" IsDirectionReversed="True" Grid.RowSpan="2">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True" Grid.RowSpan="2">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
                                 </Track.DecreaseRepeatButton>
 
                                 <Track.Thumb>
-                                    <Thumb Background="#A656E9" Width="8">
-                                        <Thumb.Template>
-                                            <ControlTemplate TargetType="Thumb">
-                                                <Border Background="{TemplateBinding Background}" CornerRadius="5"/>
-                                            </ControlTemplate>
-                                        </Thumb.Template>
-                                    </Thumb>
-                                </Track.Thumb>
-
-                                <Track.IncreaseRepeatButton>
-                                    <RepeatButton Command="{x:Static ScrollBar.LineDownCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
-                                </Track.IncreaseRepeatButton>
-                            </Track>
-
-                            <Track x:Name="PART_Track_2" IsDirectionReversed="True" Grid.RowSpan="2">
-                                <Track.DecreaseRepeatButton>
-                                    <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
-                                </Track.DecreaseRepeatButton>
-
-                                <Track.Thumb>
-                                    <Thumb Background="#A656E9" Width="8">
+                                    <Thumb Background="#A656E9" Width="8" Height="8">
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
                                                 <Border Background="{TemplateBinding Background}" CornerRadius="5"/>
