@@ -17,6 +17,7 @@
     </Window.Background>
 
     <Window.Resources>
+        <!-- Style for scrollbar's thumb -->
         <Style TargetType="ScrollBar">
             <Setter Property="Background" Value="#030713" />
             <Setter Property="Width" Value="3" />
@@ -28,24 +29,36 @@
                                 <RowDefinition Height="4*"/>
                                 <RowDefinition Height="3*"/>
                             </Grid.RowDefinitions>
-                            <Border Background="{TemplateBinding Background}" CornerRadius="3" Grid.RowSpan="2" />
-                            <Track x:Name="PART_Track" IsDirectionReversed="True" Grid.RowSpan="2">
+                            
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="3" 
+                                    Grid.RowSpan="2" />
+                            <Track x:Name="PART_Track" 
+                                   IsDirectionReversed="True" 
+                                   Grid.RowSpan="2">
                                 <Track.DecreaseRepeatButton>
-                                    <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
+                                    <RepeatButton Command="{x:Static ScrollBar.LineUpCommand}" 
+                                                  CommandTarget="{Binding ElementName=PART_VerticalScrollBar}"
+                                                  Opacity="0"/>
                                 </Track.DecreaseRepeatButton>
 
                                 <Track.Thumb>
-                                    <Thumb Background="#A656E9" Width="8" Height="8">
+                                    <Thumb Background="#A656E9" 
+                                           Width="8" 
+                                           Height="8">
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
-                                                <Border Background="{TemplateBinding Background}" CornerRadius="5"/>
+                                                <Border Background="{TemplateBinding Background}" 
+                                                        CornerRadius="5"/>
                                             </ControlTemplate>
                                         </Thumb.Template>
                                     </Thumb>
                                 </Track.Thumb>
 
                                 <Track.IncreaseRepeatButton>
-                                    <RepeatButton Command="{x:Static ScrollBar.LineDownCommand}" CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" Opacity="0"/>
+                                    <RepeatButton Command="{x:Static ScrollBar.LineDownCommand}" 
+                                                  CommandTarget="{Binding ElementName=PART_VerticalScrollBar}" 
+                                                  Opacity="0"/>
                                 </Track.IncreaseRepeatButton>
                             </Track>
                         </Grid>
@@ -54,6 +67,7 @@
             </Setter>
         </Style>
 
+        <!-- Style for New Events buttons -->
         <Style x:Key="button_BackToTop" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="#692AD1" />
             <Setter Property="Template">
@@ -90,10 +104,9 @@
         </Grid.RowDefinitions>
 
         <!-- Control Panel -->
-        <StackPanel x:Name="top_ControlPanel" 
-                    Orientation="Horizontal" 
-                    Grid.Row="0"
-                    Margin="9 7 2 4">
+        <DockPanel Grid.Row="0"
+                   Margin="9 7 9 4"
+                   x:Name="top_ControlPanel">
 
             <!-- Pause / Unpause alerts button -->
             <Border Background="#030713"
@@ -150,21 +163,26 @@
                            Width="20" />
                 </Button>
             </Border>
-        </StackPanel>
+
+            <TextBox Text="test"
+                     HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+                     Foreground="FloralWhite"/>
+        </DockPanel>
 
         <!-- Donation Panel -->
         <ScrollViewer Grid.Row="1" 
                       VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Disabled"
                       x:Name="scrollViewer_donationPanel"
-                      Margin="2 1 2 7"
+                      Margin="2 1 -4 7"
                       ScrollChanged="Scroll_Donation_Panel">
             <StackPanel x:Name="donation_Panel"
-                        Margin="7 5 7 -2"
+                        Margin="7 5 1 -2"
                         Orientation="Vertical"
                         VerticalAlignment="Center">
 
-                <!-- Loading, removing after loaded -->
+                <!-- Loading text; removed after being loaded -->
                 <GroupBox Style="{DynamicResource groupBoxWithBorder}"
                           BorderThickness="0"
                           HorizontalAlignment="Center"
@@ -250,9 +268,9 @@
                     </StackPanel>
                 </GroupBox> 
                 -->
-                
+
             </StackPanel>
-            
+
         </ScrollViewer>
 
         <!-- BackToTop Button -->
@@ -292,14 +310,14 @@
                       VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Disabled"
                       x:Name="scrollViewer_subscriberPanel"
-                      Margin="2 7 2 2"
+                      Margin="2 7 -4 2"
                       ScrollChanged="Scroll_Subscriber_Panel">
             <StackPanel x:Name="subscriptions_Panel"
-                        Margin="7 5 7 -2"
+                        Margin="7 5 1 -2"
                         Orientation="Vertical"
                         VerticalAlignment="Center">
 
-                <!-- Loading, removing after loaded -->
+                <!-- Loading text, removed after being loaded -->
                 <GroupBox Style="{DynamicResource groupBoxWithBorder}"
                           BorderThickness="0"
                           HorizontalAlignment="Center"
