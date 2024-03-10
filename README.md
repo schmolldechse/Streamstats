@@ -12,4 +12,7 @@ This program provides a convenient interface to monitor recent activities on twi
 - [X] "X New Events" Button on the bottom right corner, if current view (VerticalOffset) of ScrollViewer is not on the top
 - [X] replay donations 
 - [] search field for messages, usernames
-- [] 
+- [] reconnect on disconnect
+- [] add types: Subgifts, Raids, Hosts
+- [] reloaded types: show hover effect, text "REPLAY", green?
+- [] rightclick on groupbox: Copy text, copy link, replay, block user

@@ -166,7 +166,7 @@
                     Style="{DynamicResource login}"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1"
+        <StackPanel Grid.Row="2"
                     Panel.ZIndex="1"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
