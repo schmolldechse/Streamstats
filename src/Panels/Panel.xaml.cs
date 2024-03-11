@@ -45,6 +45,12 @@ namespace Streamstats.src.Panels
         private readonly string STREAMELEMENTS_PAUSE_API = "https://api.streamelements.com/kappa/v3/overlays/{0}/action";
         private readonly string STREAMELEMENTS_SKIP_MUTE_API = "https://api.streamelements.com/kappa/v2/channels/{0}/socket";
 
+        /**
+         * Border brushes for searchbox
+         */
+        private SolidColorBrush GRAY = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#333742"));
+        private SolidColorBrush PURPLE = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6D28D9"));
+
         public Panel()
         {
             InitializeComponent();
@@ -567,6 +573,51 @@ namespace Streamstats.src.Panels
                 }
                 else notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not load state", new Thickness(0, 15, 15, 15)));
             });
+        }
+
+        private void searchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            this.search_Border.BorderBrush = textBox.Text.Length > 0 ? PURPLE : GRAY;
+
+            foreach (GroupBox groupBox in this.donation_Panel.Children)
+            {
+                var document = groupBox.Tag;
+                if (document is Tip tip)
+                {
+                    bool match = tip.user.username.ToLower().Contains(textBox.Text.ToLower()) || tip.message.ToLower().Contains(textBox.Text.ToLower());
+                    groupBox.Visibility = match ? Visibility.Visible : Visibility.Collapsed;
+                }
+
+                if (document is Subscription subscription)
+                {
+                    bool match = subscription.user.username.ToLower().Contains(textBox.Text.ToLower()) || subscription.message.ToLower().Contains(textBox.Text.ToLower());
+                    groupBox.Visibility = match ? Visibility.Visible : Visibility.Collapsed;
+                }
+
+                if (document is Cheer cheer)
+                {
+                    bool match = cheer.user.username.ToLower().Contains(textBox.Text.ToLower()) || cheer.message.ToLower().Contains(textBox.Text.ToLower());
+                    groupBox.Visibility = match ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
+
+            this.scrollViewer_donationPanel.UpdateLayout();
+        }
+
+        private void searchBox_MouseEnter(object sender, MouseEventArgs e)
+        {
+            this.search_Border.BorderBrush = PURPLE;
+        }
+
+        private void searchBox_MouseLeave(object sender, MouseEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            this.search_Border.BorderBrush = textBox.Text.Length > 0 ? PURPLE : GRAY;
         }
     }
 }

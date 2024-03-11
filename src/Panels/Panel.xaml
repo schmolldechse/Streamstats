@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Streamstats.src.Panels"
+        xmlns:UI="clr-namespace:Streamstats.src.UI"
         mc:Ignorable="d"       
         Title="Streamstats" 
         MinHeight="600"
@@ -44,8 +45,7 @@
 
                                 <Track.Thumb>
                                     <Thumb Background="#A656E9" 
-                                           Width="8" 
-                                           Height="8">
+                                           Width="8" >
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
                                                 <Border Background="{TemplateBinding Background}" 
@@ -90,6 +90,8 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <UI:PlaceholderTextBox x:Key="PlaceholderTextBox" />
 
     </Window.Resources>
 
@@ -169,13 +171,18 @@
                     BorderThickness="2"
                     CornerRadius="4"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Center">
-                <TextBox Text="Search"
-                         Foreground="FloralWhite"
-                         Background="Transparent"
-                         Margin="7 5 7 5" 
-                         BorderThickness="0" 
-                         Height="Auto" /> 
+                    VerticalAlignment="Center"
+                    x:Name="search_Border">
+                <UI:PlaceholderTextBox Placeholder="Search"
+                                       Foreground="FloralWhite"
+                                       Background="Transparent"
+                                       Margin="7 5 7 5" 
+                                       BorderThickness="0"
+                                       Height="Auto" 
+                                       x:Name="searchBox"
+                                       TextChanged="searchBox_TextChanged"
+                                       MouseEnter="searchBox_MouseEnter"
+                                       MouseLeave="searchBox_MouseLeave"/>
             </Border>
         </DockPanel>
 
