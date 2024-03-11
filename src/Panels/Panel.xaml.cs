@@ -157,6 +157,32 @@ namespace Streamstats.src.Panels
                     mute_Button.Content = mute_Button_Image;
                 });
             });
+
+
+
+            App.se_service.client.On("connect_timeout", async (data) =>
+            {
+                this.notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Connection timed out", new Thickness(0, 15, 15, 15)));
+
+                Console.WriteLine($"Connection timed out, trying to reconnect in 5 seconds");
+                await Task.Delay(5000);
+
+
+                await App.se_service.ConnectSocket(
+                               async (success, data) =>
+                               {
+                                   if (!success)
+                                   {
+                                       Console.WriteLine("Connection refused. Redirecting to login panel");
+                                       App.Current.Dispatcher.InvokeAsync(() => notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", $"Connection refused", new Thickness(0, 15, 15, 15))));
+                                       await Task.Delay(5000);
+
+                                       this.Hide();
+                                       new Login().Show();
+                                       return;
+                                   }
+                               });
+            });
         }
 
         public void handleIncoming(string data)

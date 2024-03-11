@@ -68,6 +68,12 @@ namespace Streamstats.src.Service.Streamelements
                 callback?.Invoke(false, data.ToString());
             });
 
+            client.On("connect_error", (data) =>
+            {
+                Console.WriteLine($"Failed to connect - Error {data}");
+                callback?.Invoke(false, data.ToString());
+            });
+
             await client.EmitAsync("authenticate", new { method = "jwt", token = App.config.jwtToken });
         }
 
