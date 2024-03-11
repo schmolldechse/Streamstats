@@ -14,5 +14,5 @@ This program provides a convenient interface to monitor recent activities on twi
 - [X] reconnect on disconnect
 - search field for messages, usernames
 - add types: Subgifts, Raids, Hosts
-- reload: show hover effect, text "REPLAY", green?
-- rightclick on groupbox: Copy text, copy link, replay, block user
+- replayed types: show "REPLAY" in groupbox, green?
+- rightclick on groupbox with these options: Copy text, copy link (if available), replay, block user

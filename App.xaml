@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Streamstats"
              StartupUri="src/Panels/Login.xaml">
+
     <Application.Resources>
         <FontFamily x:Key="Ubuntu">pack://application:,,,/Fonts/Ubuntu/#Ubuntu</FontFamily>
 
@@ -51,17 +52,6 @@
                             <ContentPresenter VerticalAlignment="Center"
                                HorizontalAlignment="Center" />
                         </Border>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="RenderTransform">
-                                    <Setter.Value>
-                                        <TranslateTransform X="2" Y="2" />
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-
-                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

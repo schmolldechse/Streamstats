@@ -164,11 +164,19 @@
                 </Button>
             </Border>
 
-            <TextBlock Text="Search"
-                     HorizontalAlignment="Right"
-                     VerticalAlignment="Center"
-                     Foreground="FloralWhite"
-                     Background="Transparent"/>
+            <Border Background="#030713"
+                    BorderBrush="#212936"
+                    BorderThickness="2"
+                    CornerRadius="4"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+                <TextBox Text="Search"
+                         Foreground="FloralWhite"
+                         Background="Transparent"
+                         Margin="7 5 7 5" 
+                         BorderThickness="0" 
+                         Height="Auto" /> 
+            </Border>
         </DockPanel>
 
         <!-- Donation Panel -->
@@ -304,7 +312,7 @@
                       HorizontalAlignment="Stretch" 
                       VerticalAlignment="Center" 
                       Background="#333742" 
-                      />
+                      Margin="10 0 10 0" />
 
         <!-- Subscriber Panel -->
         <ScrollViewer Grid.Row="3" 
