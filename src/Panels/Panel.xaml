@@ -29,7 +29,7 @@
                                 <RowDefinition Height="4*"/>
                                 <RowDefinition Height="3*"/>
                             </Grid.RowDefinitions>
-                            
+
                             <Border Background="{TemplateBinding Background}"
                                     CornerRadius="3" 
                                     Grid.RowSpan="2" />
@@ -415,7 +415,7 @@
                     </StackPanel>
                 </GroupBox>
                 -->
-                
+
             </StackPanel>
         </ScrollViewer>
 

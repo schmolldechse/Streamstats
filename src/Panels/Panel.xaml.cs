@@ -74,7 +74,7 @@ namespace Streamstats.src.Panels
                     if (kvp.Key == null) continue;
                     if (kvp.Value == null) continue;
 
-                    switch (kvp.Value) 
+                    switch (kvp.Value)
                     {
                         case Tip tip:
                             donation_Panel.Children.Insert(0, new TipGroupBox(tip, TipGroupBox.Category.NORMAL));
@@ -311,7 +311,7 @@ namespace Streamstats.src.Panels
             if (!(e.ExtentHeightChange == 0 && e.ExtentWidthChange == 0)) return;
 
             if (this.startToMiss_Tip == null) return;
-            if (this.ById_DonationPanel(this.startToMiss_Tip.activity.id) == null) return; 
+            if (this.ById_DonationPanel(this.startToMiss_Tip.activity.id) == null) return;
 
             GroupBox groupBox = this.ById_DonationPanel(this.startToMiss_Tip.activity.id);
 

@@ -16,6 +16,7 @@
     <None Remove="Images\Cheer.ico" />
     <None Remove="Images\Donation.ico" />
     <None Remove="Images\Muted.ico" />
+    <None Remove="Images\Paste_Purple.ico" />
     <None Remove="Images\Pause.ico" />
     <None Remove="Images\Play.ico" />
     <None Remove="Images\Play_Red.ico" />
@@ -43,6 +44,7 @@
     <Resource Include="Images\Cheer.ico" />
     <Resource Include="Images\Donation.ico" />
     <Resource Include="Images\Muted.ico" />
+    <Resource Include="Images\Paste_Purple.ico" />
     <Resource Include="Images\Pause.ico" />
     <Resource Include="Images\Play.ico" />
     <Resource Include="Images\Play_Red.ico" />

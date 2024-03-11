@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 
 namespace Streamstats.src.Panels
@@ -18,7 +22,13 @@ namespace Streamstats.src.Panels
 
             if (App.config.jwtToken != null && App.config.jwtToken.Length > 0) textBox_jwtToken.Password = App.config.jwtToken;
 
-            button_Login.Click += Button_Login;
+            this.button_Login.Click += Button_Login;
+            this.redirect_SE_Dashboard.NavigateUri = new Uri("https://streamelements.com/dashboard/account/channels");
+            this.redirect_SE_Dashboard.RequestNavigate += (sender, e) =>
+            {
+                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+                Console.WriteLine($"Opened url {e.Uri.AbsoluteUri}");
+            };
         }
 
         private void Button_Login(object sender, RoutedEventArgs e)
@@ -39,6 +49,16 @@ namespace Streamstats.src.Panels
             App.config.save();
 
             connect();
+        }
+
+        private void Paste_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Clipboard.ContainsText()) return;
+
+            string clipboard = Clipboard.GetText();
+            this.textBox_jwtToken.Password = clipboard;
+
+            notificationCenter.Children.Add(new src.Notification.Notification(4, "#4CAF50", "#388E3C", "#f5f5f5", "Pasted", NOTIFICATION_PANEL_THICKNESS));
         }
 
         private async Task connect()

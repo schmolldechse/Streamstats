@@ -11,7 +11,7 @@
         Height="850"
         Width="450"
         WindowStartupLocation="CenterScreen">
-    
+
     <Window.Background>
         <SolidColorBrush Color="#030713"></SolidColorBrush>
     </Window.Background>
@@ -21,6 +21,8 @@
 
         <SolidColorBrush x:Key="TextColor" Color="FloralWhite" />
         <SolidColorBrush x:Key="BorderColor" Color="#333742" />
+
+        <SolidColorBrush x:Key="Purple" Color="#6D28D9" />
 
         <!-- Inputfield -->
         <Style x:Key="tokenStyle" TargetType="{x:Type PasswordBox}">
@@ -56,6 +58,15 @@
                                       Margin="-2 3"/>
                             </Grid>
                         </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource Purple}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource Purple}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -94,8 +105,7 @@
 
         <StackPanel Grid.Row="1"
                     Orientation="Vertical"
-                    VerticalAlignment="Center"
-                    Margin="0 0 0 0">
+                    VerticalAlignment="Center">
 
             <Image Source="../../Images/Logo.ico" 
                    Height="100"
@@ -117,8 +127,7 @@
                        TextAlignment="Center" 
                        Margin="60 0 50 0" >
                 Enter your StreamElements JWT-Token to continue. You can find it on the 
-                <Hyperlink NavigateUri="https://streamelements.com/dashboard/account/channels"
-                           Foreground="#6D28D9">account page</Hyperlink>
+                <Hyperlink x:Name="redirect_SE_Dashboard" Foreground="#6D28D9">account page</Hyperlink>
                 in the dashboard
             </TextBlock>
 
@@ -129,11 +138,39 @@
                        FontFamily="{StaticResource Ubuntu}"
                        Margin="35 50 35 0" />
 
-            <PasswordBox x:Name="textBox_jwtToken" 
-                     Style="{DynamicResource tokenStyle}"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Top"
-                     Margin="30 7 30 0" />
+            <DockPanel Margin="30 7 30 0">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <PasswordBox x:Name="textBox_jwtToken" 
+                                 Style="{DynamicResource tokenStyle}"
+                                 Grid.Row="0"
+                                 HorizontalAlignment="Stretch"/>
+
+                    <Border Grid.Column="1"
+                            Background="#030713"
+                            BorderBrush="#333742"
+                            BorderThickness="2"
+                            CornerRadius="4"
+                            Margin="10 0 0 0">
+                        <Button Background="Transparent"  
+                                BorderThickness="0"
+                                x:Name="paste_Button"
+                                Click="Paste_Button_Click"
+                                Style="{StaticResource button}">
+                            <Image Source="../../Images/Paste_Purple.ico" 
+                                   Height="20"
+                                   Width="20" 
+                                   Margin="10 0 10 0"/>
+                        </Button>
+                    </Border>
+                </Grid>
+
+            </DockPanel>
 
             <Button x:Name="button_Login"
                     BorderThickness="0"
