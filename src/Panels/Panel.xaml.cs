@@ -174,13 +174,15 @@ namespace Streamstats.src.Panels
                                    if (!success)
                                    {
                                        Console.WriteLine("Connection refused. Redirecting to login panel");
-                                       App.Current.Dispatcher.InvokeAsync(() => notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", $"Connection refused", new Thickness(0, 15, 15, 15))));
+                                       App.Current.Dispatcher.InvokeAsync(() => notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Connection refused", new Thickness(0, 15, 15, 15))));
                                        await Task.Delay(5000);
 
                                        this.Hide();
                                        new Login().Show();
                                        return;
                                    }
+
+                                   App.Current.Dispatcher.InvokeAsync(() => notificationCenter.Children.Add(new src.Notification.Notification(7, "#4CAF50", "#388E3C", "#f5f5f5", "Reconnected", new Thickness(0, 15, 15, 15))));
                                });
             });
         }
