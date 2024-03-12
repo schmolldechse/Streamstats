@@ -249,6 +249,7 @@
                                                        Margin="10 4 10 4" />
                                         </Border>
                                     </TextBlock>
+
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="0"

@@ -102,6 +102,14 @@ namespace Streamstats.src.Service.Streamelements
                 Console.WriteLine($"Failed to reconnect {exception}");
                 callback?.Invoke(false, null);
             };
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(10);
+            timer.Tick += (sender, e) =>
+            {
+                Console.WriteLine("still connected : " + client.Connected);
+            };
+            timer.Start();
         }
 
         /**

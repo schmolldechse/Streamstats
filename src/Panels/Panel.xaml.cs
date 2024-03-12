@@ -83,15 +83,24 @@ namespace Streamstats.src.Panels
                     switch (kvp.Value)
                     {
                         case Tip tip:
-                            donation_Panel.Children.Insert(0, new TipGroupBox(tip, TipGroupBox.Category.NORMAL));
+                            GroupBox tipGroupBox = new TipGroupBox(tip, TipGroupBox.Category.NORMAL);
+                            tipGroupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+                            donation_Panel.Children.Insert(0, tipGroupBox);
                             break;
 
                         case Subscription subscription:
-                            subscriptions_Panel.Children.Insert(0, new SubscriptionGroupBox(subscription));
+                            GroupBox subscriptionGroupBox = new SubscriptionGroupBox(subscription);
+                            subscriptionGroupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+                            subscriptions_Panel.Children.Insert(0, subscriptionGroupBox);
                             break;
 
                         case Cheer cheer:
-                            donation_Panel.Children.Insert(0, new CheerGroupBox(cheer));
+                            GroupBox cheerGroupBox = new CheerGroupBox(cheer);
+                            cheerGroupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+                            this.donation_Panel.Children.Insert(0, new CheerGroupBox(cheer));
                             break;
 
                         default:
@@ -163,34 +172,6 @@ namespace Streamstats.src.Panels
                     mute_Button.Content = mute_Button_Image;
                 });
             });
-
-
-
-            App.se_service.client.On("connect_timeout", async (data) =>
-            {
-                this.notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Connection timed out", new Thickness(0, 15, 15, 15)));
-
-                Console.WriteLine($"Connection timed out, trying to reconnect in 5 seconds");
-                await Task.Delay(5000);
-
-
-                await App.se_service.ConnectSocket(
-                               async (success, data) =>
-                               {
-                                   if (!success)
-                                   {
-                                       Console.WriteLine("Connection refused. Redirecting to login panel");
-                                       App.Current.Dispatcher.InvokeAsync(() => notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Connection refused", new Thickness(0, 15, 15, 15))));
-                                       await Task.Delay(5000);
-
-                                       this.Hide();
-                                       new Login().Show();
-                                       return;
-                                   }
-
-                                   App.Current.Dispatcher.InvokeAsync(() => notificationCenter.Children.Add(new src.Notification.Notification(7, "#4CAF50", "#388E3C", "#f5f5f5", "Reconnected", new Thickness(0, 15, 15, 15))));
-                               });
-            });
         }
 
         public void handleIncoming(string data)
@@ -213,6 +194,8 @@ namespace Streamstats.src.Panels
                     if (result is Subscription subscription)
                     {
                         GroupBox groupBox = new SubscriptionGroupBox(subscription);
+                        groupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+
                         this.subscriptions_Panel.Children.Add(groupBox);
 
                         if (scrollViewer_subscriberPanel.VerticalOffset > 20)
@@ -229,6 +212,8 @@ namespace Streamstats.src.Panels
                     else if (result is Tip tip)
                     {
                         GroupBox groupBox = new TipGroupBox(tip, TipGroupBox.Category.NORMAL);
+                        groupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+
                         this.donation_Panel.Children.Insert(0, groupBox);
 
                         if (tip.amount >= this.highest().amount)
@@ -251,6 +236,8 @@ namespace Streamstats.src.Panels
                     else if (result is Cheer cheer)
                     {
                         GroupBox groupBox = new CheerGroupBox(cheer);
+                        groupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+
                         this.donation_Panel.Children.Insert(0, groupBox);
 
                         Console.WriteLine($"Fetched incoming as cheer. Total : {App.se_service.fetched.Count}");
