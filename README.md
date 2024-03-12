@@ -16,3 +16,4 @@ This program provides a convenient interface to monitor recent activities on twi
 - add types: Subgifts, Raids, Hosts
 - replayed types: show "REPLAY" in groupbox, green?
 - rightclick on groupbox with these options: Copy text, copy link (if available), replay, block user
+- add channel emotes? docs url: https://dev.streamelements.com/docs/api-docs/45a6254fd23e3-channel-emotes

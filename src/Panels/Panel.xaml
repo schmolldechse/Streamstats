@@ -166,6 +166,7 @@
                 </Button>
             </Border>
 
+            <!-- Search field -->
             <Border Background="#030713"
                     BorderBrush="#212936"
                     BorderThickness="2"
@@ -194,96 +195,95 @@
                       Margin="2 1 -4 7"
                       ScrollChanged="Scroll_Donation_Panel">
             <StackPanel x:Name="donation_Panel"
-                        Margin="7 5 1 -2"
-                        Orientation="Vertical"
-                        VerticalAlignment="Center">
+                            Margin="7 5 1 -2"
+                            Orientation="Vertical"
+                            VerticalAlignment="Center">
 
                 <!-- Loading text; removed after being loaded -->
                 <GroupBox Style="{DynamicResource groupBoxWithBorder}"
-                          BorderThickness="0"
-                          HorizontalAlignment="Center"
-                          x:Name="loading_Donations">
+                              BorderThickness="0"
+                              HorizontalAlignment="Center"
+                              x:Name="loading_Donations">
                     <TextBlock Foreground="LightGray" 
-                               FontFamily="{StaticResource Ubuntu}"
-                               FontWeight="Bold"
-                               Text="Loading ..."
-                               FontSize="28"/>
+                                   FontFamily="{StaticResource Ubuntu}"
+                                   FontWeight="Bold"
+                                   Text="Loading ..."
+                                   FontSize="28"/>
                 </GroupBox>
 
                 <!-- groupboxes being added via code -->
 
                 <!-- groupbox example
-                <GroupBox Style="{StaticResource groupBoxWithBorder}"
-                          Margin="0 0 0 2"
-                          FontFamily="{StaticResource Ubuntu}"
-                          FontWeight="Bold">
-                    <StackPanel>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
+                    <GroupBox Style="{StaticResource groupBoxWithBorder}"
+                              Margin="0 0 0 2"
+                              FontFamily="{StaticResource Ubuntu}"
+                              FontWeight="Bold">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
 
-                            <StackPanel Margin="0 12 0 5" 
-                                        Grid.Row="0" 
-                                        Orientation="Horizontal">
-                                <Image Source="../../Images/Donation.ico" 
-                                       Height="25"
-                                       Width="25"
-                                       Margin="3 0 0 0"/>
+                                <StackPanel Margin="0 12 0 5" 
+                                            Grid.Row="0" 
+                                            Orientation="Horizontal">
+                                    <Image Source="../../Images/Donation.ico" 
+                                           Height="25"
+                                           Width="25"
+                                           Margin="3 0 0 0"/>
 
-                                <TextBlock Margin="5 0 0 0"
-                                           Text="Username123"
-                                           Foreground="#5BBBA5"
-                                           VerticalAlignment="Center">
-                                </TextBlock>
+                                    <TextBlock Margin="5 0 0 0"
+                                               Text="Username123"
+                                               Foreground="#5BBBA5"
+                                               VerticalAlignment="Center">
+                                    </TextBlock>
 
-                                <TextBlock Margin="5 0 0 0"
-                                           VerticalAlignment="Center">
-                                    <Border BorderBrush="#212936"
-                                            Background="#212936"
-                                            CornerRadius="10">
-                                        <TextBlock Text="tedddddst €" 
-                                                   Foreground="FloralWhite" 
-                                                   Margin="10 4 10 4" />
-                                    </Border>
-                                </TextBlock>
-                            </StackPanel>
+                                    <TextBlock Margin="5 0 0 0"
+                                               VerticalAlignment="Center">
+                                        <Border BorderBrush="#212936"
+                                                Background="#212936"
+                                                CornerRadius="10">
+                                            <TextBlock Text="tedddddst €" 
+                                                       Foreground="FloralWhite" 
+                                                       Margin="10 4 10 4" />
+                                        </Border>
+                                    </TextBlock>
+                                </StackPanel>
 
-                            <StackPanel Grid.Row="0"
-                                        Orientation="Horizontal"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        Margin="0 12 4 0">
+                                <StackPanel Grid.Row="0"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Margin="0 12 4 0">
 
-                                <TextBlock Text="123"
-                                           Foreground="Gray"
-                                           Margin="0 0 4 0"
-                                           VerticalAlignment="Center"/>
-                                
-                                <Button Background="Transparent"
-                                        BorderThickness="0"
-                                        VerticalAlignment="Center">
-                                    <Image Source="../../Images/Replay_Lightgray.ico" 
-                                       Height="20"
-                                       Width="20"/>
-                                </Button>
-                            </StackPanel>
+                                    <TextBlock Text="123"
+                                               Foreground="Gray"
+                                               Margin="0 0 4 0"
+                                               VerticalAlignment="Center"/>
 
-                            <WrapPanel Grid.Row="1"
-                                       Margin="2 0 3 5">
-                                <RichTextBox IsReadOnly="True"
-                                             Background="#030713"
-                                             BorderThickness="0">
-                                    <FlowDocument>
-                                        <Paragraph Foreground="FloralWhite">yoyo was geht ab</Paragraph>
-                                    </FlowDocument>
-                                </RichTextBox>
-                            </WrapPanel>
-                        </Grid>
-                    </StackPanel>
-                </GroupBox> 
-                -->
+                                    <Button Background="Transparent"
+                                            BorderThickness="0"
+                                            VerticalAlignment="Center">
+                                        <Image Source="../../Images/Replay_Lightgray.ico" 
+                                               Height="20"
+                                               Width="20"/>
+                                    </Button>
+                                </StackPanel>
+
+                                <WrapPanel Grid.Row="1"
+                                           Margin="2 0 3 5">
+                                    <RichTextBox IsReadOnly="True"
+                                                 Background="#030713"
+                                                 BorderThickness="0">
+                                        <FlowDocument>
+                                            <Paragraph Foreground="FloralWhite">yoyo was geht ab</Paragraph>
+                                        </FlowDocument>
+                                    </RichTextBox>
+                                </WrapPanel>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>   -->
 
             </StackPanel>
 

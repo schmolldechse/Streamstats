@@ -229,14 +229,14 @@ namespace Streamstats.src.Service.UI
 
         private string formatCurrency(decimal amount, string currency)
         {
-            string a = amount % 1 == 0 ? $"{amount}" : $"{amount: 0.00}";
-            string b = currency switch
+            string formattedAmount = string.Format("{0:#,##0.##}", amount);
+            string result = currency switch
             {
-                "EUR" => a + " €",
-                "USD" => "$ " + a,
-                _ => a + currency
+                "EUR" => formattedAmount + " €",
+                "USD" => "$ " + formattedAmount,
+                _ => formattedAmount + currency
             };
-            return b;
+            return result;
         }
 
         private string timeDifference(DateTime past)

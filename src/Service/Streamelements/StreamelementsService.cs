@@ -11,6 +11,7 @@ using SocketIOClient.Transport;
 using Streamstats.src.Service.Objects.Types;
 using Streamstats.src.Service.Objects;
 using System.IO.Packaging;
+using System.Windows.Threading;
 
 namespace Streamstats.src.Service.Streamelements
 {
@@ -29,17 +30,21 @@ namespace Streamstats.src.Service.Streamelements
         public StreamelementsService()
         {
             this.fetched = new Dictionary<Activity, object>();
+            this.client = new SocketIOClient.SocketIO("https://realtime.streamelements.com", new SocketIOOptions
+            {
+                EIO = EngineIO.V4,
+                Transport = TransportProtocol.WebSocket,
+                Reconnection = true,
+                ReconnectionAttempts = 5,
+                ReconnectionDelayMax = 1000,
+                AutoUpgrade = true,
+            });
         }
 
         public async Task ConnectSocket(Action<bool, string?> callback)
         {
-            client = new SocketIOClient.SocketIO("https://realtime.streamelements.com", new SocketIOOptions
-            {
-                EIO = EngineIO.V4,
-                Transport = TransportProtocol.WebSocket
-            });
-
             await client.ConnectAsync();
+            await client.EmitAsync("authenticate", new { method = "jwt", token = App.config.jwtToken });
 
             client.On("authenticated", (data) =>
             {
@@ -74,7 +79,29 @@ namespace Streamstats.src.Service.Streamelements
                 callback?.Invoke(false, data.ToString());
             });
 
-            await client.EmitAsync("authenticate", new { method = "jwt", token = App.config.jwtToken });
+            client.OnReconnectAttempt += (sender, e) =>
+            {
+                Console.WriteLine($"Reconnect attempt {e}");
+                callback?.Invoke(false, null);
+            };
+
+            client.OnReconnected += (sender, e) =>
+            {
+                Console.WriteLine($"Reconnected");
+                callback?.Invoke(false, null);
+            };
+
+            client.OnReconnectError += (sender, exception) =>
+            {
+                Console.WriteLine($"An error occurred while reconnecting {exception}");
+                callback?.Invoke(false, null);
+            };
+
+            client.OnReconnectFailed += (sender, exception) =>
+            {
+                Console.WriteLine($"Failed to reconnect {exception}");
+                callback?.Invoke(false, null);
+            };
         }
 
         /**
