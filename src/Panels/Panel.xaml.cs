@@ -1,20 +1,22 @@
 ﻿using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using Streamstats.src.Service.Streamelements;
-using Streamstats.src.Service;
-using System.Net.Http;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Streamstats.src.Service.Objects.Types;
 using Streamstats.src.Service.UI;
-using System.Windows.Input;
-using System.Windows.Controls.Primitives;
-using System.Windows.Threading;
+using Streamstats.src.UI.Buttons;
 using System;
-using Streamstats.src.Service.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Streamstats.src.Panels
 {
@@ -37,13 +39,10 @@ namespace Streamstats.src.Panels
         private Subscription startToMiss_Subscription;
         private int missedSubs;
 
-        private bool ALERTS_PAUSED, ALERTS_MUTED;
-
         /**
          * {0} represents channelId
          */
-        private readonly string STREAMELEMENTS_PAUSE_API = "https://api.streamelements.com/kappa/v3/overlays/{0}/action";
-        private readonly string STREAMELEMENTS_SKIP_MUTE_API = "https://api.streamelements.com/kappa/v2/channels/{0}/socket";
+        private readonly string OVERLAY_API = "https://api.streamelements.com/kappa/v3/overlays/{0}/action";
 
         /**
          * Border brushes for searchbox
@@ -63,7 +62,7 @@ namespace Streamstats.src.Panels
 
             // StreamElements
             App.httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {App.config.jwtToken}");
-            _ = App.se_service.fetchLatest(7, (done) =>
+            _ = App.se_service.fetchLatest(5, (done) =>
             {
                 this.donation_Panel.Children.Remove(this.loading_Donations);
                 this.donation_Panel.VerticalAlignment = VerticalAlignment.Stretch;
@@ -84,22 +83,16 @@ namespace Streamstats.src.Panels
                     {
                         case Tip tip:
                             GroupBox tipGroupBox = new TipGroupBox(tip, TipGroupBox.Category.NORMAL);
-                            tipGroupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
-
-                            donation_Panel.Children.Insert(0, tipGroupBox);
+                            this.donation_Panel.Children.Insert(0, tipGroupBox);
                             break;
 
                         case Subscription subscription:
                             GroupBox subscriptionGroupBox = new SubscriptionGroupBox(subscription);
-                            subscriptionGroupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
-
-                            subscriptions_Panel.Children.Insert(0, subscriptionGroupBox);
+                            this.subscriptions_Panel.Children.Insert(0, subscriptionGroupBox);
                             break;
 
                         case Cheer cheer:
                             GroupBox cheerGroupBox = new CheerGroupBox(cheer);
-                            cheerGroupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
-
                             this.donation_Panel.Children.Insert(0, new CheerGroupBox(cheer));
                             break;
 
@@ -128,22 +121,13 @@ namespace Streamstats.src.Panels
                 Console.WriteLine($"Received an overlay update (pause/unpause alerts) : {data}");
 
                 bool value = (bool)JArray.Parse(data.ToString())[0];
-
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    ALERTS_PAUSED = value;
-                    switch (ALERTS_PAUSED)
-                    {
-                        case true:
-                            pause_Button_Image.Dispatcher.Invoke(() => pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Play_Red.ico", UriKind.RelativeOrAbsolute)));
-                            break;
+                    this.pause_Button.Tag = (bool) value;
 
-                        case false:
-                            pause_Button_Image.Dispatcher.Invoke(() => pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Pause.ico", UriKind.RelativeOrAbsolute)));
-                            break;
-                    }
-
-                    pause_Button.Content = pause_Button_Image;
+                    Image? pauseImage = pause_Button.Content as Image;
+                    pauseImage.Source = new BitmapImage(new Uri("../../Images/" + ((bool)this.pause_Button.Tag ? "Play_Red.ico" : "Pause.ico"), UriKind.RelativeOrAbsolute));
+                    pause_Button.Content = pauseImage;
                 });
             });
 
@@ -157,19 +141,11 @@ namespace Streamstats.src.Panels
 
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    ALERTS_MUTED = value;
-                    switch (ALERTS_MUTED)
-                    {
-                        case true:
-                            mute_Button_Image.Dispatcher.Invoke(() => mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Muted.ico", UriKind.RelativeOrAbsolute)));
-                            break;
+                    this.mute_Button.Tag = (bool)value;
 
-                        case false:
-                            mute_Button_Image.Dispatcher.Invoke(() => mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Unmuted.ico", UriKind.RelativeOrAbsolute)));
-                            break;
-                    }
-
-                    mute_Button.Content = mute_Button_Image;
+                    Image? muteImage = mute_Button.Content as Image;
+                    muteImage.Source = new BitmapImage(new Uri("../../Images/" + ((bool)this.mute_Button.Tag ? "Muted.ico" : "Unmuted.ico"), UriKind.RelativeOrAbsolute));
+                    mute_Button.Content = muteImage;
                 });
             });
         }
@@ -193,27 +169,29 @@ namespace Streamstats.src.Panels
                 {
                     if (result is Subscription subscription)
                     {
-                        GroupBox groupBox = new SubscriptionGroupBox(subscription);
-                        groupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+                        bool match = this.IsMatch(new string[] { subscription.user.username, subscription.message });
 
+                        GroupBox groupBox = new SubscriptionGroupBox(subscription);
+                        groupBox.Visibility = (this.searchBox.Text.Length > 0 && match) ? Visibility.Visible : Visibility.Collapsed;
                         this.subscriptions_Panel.Children.Add(groupBox);
 
-                        if (scrollViewer_subscriberPanel.VerticalOffset > 20)
+                        if (this.scrollViewer_subscriberPanel.VerticalOffset > 20)
                         {
-                            if (this.missedSubs == 0) startToMiss_Subscription = subscription;
+                            if (this.missedSubs == 0) this.startToMiss_Subscription = subscription;
                             missedSubs++;
 
-                            backToTop_Subscriptions.Visibility = Visibility.Visible;
-                            backToTop_Subscriptions_TextBlock.Text = missedSubs + " New Events";
+                            this.backToTop_Subscriptions.Visibility = Visibility.Visible;
+                            this.backToTop_Subscriptions_TextBlock.Text = this.missedSubs + " New Events";
                         }
 
                         Console.WriteLine($"Fetched incoming as subscription. Total : {App.se_service.fetched.Count}");
                     }
                     else if (result is Tip tip)
                     {
-                        GroupBox groupBox = new TipGroupBox(tip, TipGroupBox.Category.NORMAL);
-                        groupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+                        bool match = this.IsMatch(new string[] { tip.user.username, tip.message });
 
+                        GroupBox groupBox = new TipGroupBox(tip, TipGroupBox.Category.NORMAL);
+                        groupBox.Visibility = (this.searchBox.Text.Length > 0 && match) ? Visibility.Visible : Visibility.Collapsed;
                         this.donation_Panel.Children.Insert(0, groupBox);
 
                         if (tip.amount >= this.highest().amount)
@@ -222,22 +200,23 @@ namespace Streamstats.src.Panels
                             this.top_Donation.Children.Insert(0, new TipGroupBox(tip, TipGroupBox.Category.HIGHEST));
                         }
 
-                        if (scrollViewer_donationPanel.VerticalOffset > 20)
+                        if (this.scrollViewer_donationPanel.VerticalOffset > 20)
                         {
-                            if (this.missedTips == 0) startToMiss_Tip = tip;
-                            missedTips++;
+                            if (this.missedTips == 0) this.startToMiss_Tip = tip;
+                            this.missedTips++;
 
-                            backToTop_Donations.Visibility = Visibility.Visible;
-                            backToTop_Donations_TextBlock.Text = missedTips + " New Events";
+                            this.backToTop_Donations.Visibility = Visibility.Visible;
+                            this.backToTop_Donations_TextBlock.Text = this.missedTips + " New Events";
                         }
 
                         Console.WriteLine($"Fetched incoming as tip. Total : {App.se_service.fetched.Count}");
                     }
                     else if (result is Cheer cheer)
                     {
-                        GroupBox groupBox = new CheerGroupBox(cheer);
-                        groupBox.Visibility = this.searchBox.Text.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+                        bool match = this.IsMatch(new string[] { cheer.user.username, cheer.message });
 
+                        GroupBox groupBox = new CheerGroupBox(cheer);
+                        groupBox.Visibility = (this.searchBox.Text.Length > 0 && match) ? Visibility.Visible : Visibility.Collapsed;
                         this.donation_Panel.Children.Insert(0, groupBox);
 
                         Console.WriteLine($"Fetched incoming as cheer. Total : {App.se_service.fetched.Count}");
@@ -445,92 +424,6 @@ namespace Streamstats.src.Panels
             return null;
         }
 
-        /**
-         * Pause / unpause alerts button
-         */
-        private void Pause_Button_Click(object sender, RoutedEventArgs e)
-        {
-            ALERTS_PAUSED = !ALERTS_PAUSED;
-            switch (ALERTS_PAUSED)
-            {
-                case true:
-                    pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Play_Red.ico", UriKind.RelativeOrAbsolute));
-                    break;
-
-                case false:
-                    pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/Pause.ico", UriKind.RelativeOrAbsolute));
-                    break;
-            }
-
-            pause_Button.Content = pause_Button_Image;
-
-            Task.Run(async () =>
-            {
-                string action = ALERTS_PAUSED ? "pause" : "unpause";
-                using StringContent jsonContent = new StringContent(
-                    $"{{ \"action\" : \"{action}\" }}",
-                    Encoding.UTF8,
-                    "application/json");
-
-                using HttpResponseMessage responseMessage = await App.httpClient.PutAsync(string.Format(STREAMELEMENTS_PAUSE_API, App.se_service.channelId), jsonContent);
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-
-                Console.WriteLine($"Sent http request : {jsonResponse}");
-            });
-        }
-
-        /**
-         * Skip alerts button
-         */
-        private void Skip_Button_Click(object sender, RoutedEventArgs e)
-        {
-            Task.Run(async () =>
-            {
-                using StringContent jsonContent = new StringContent(
-                    "{\"event\": \"event:skip\", \"data\": {}}",
-                    Encoding.UTF8,
-                    "application/json");
-
-                using HttpResponseMessage responseMessage = await App.httpClient.PostAsync(string.Format(STREAMELEMENTS_SKIP_MUTE_API, App.se_service.channelId), jsonContent);
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-
-                Console.WriteLine($"Sent http request : {jsonResponse}");
-            });
-        }
-
-        /**
-         * Mute / unmute alerts button
-         */
-        private void Mute_Button_Click(object sender, RoutedEventArgs e)
-        {
-            ALERTS_MUTED = !ALERTS_MUTED;
-            switch (ALERTS_MUTED)
-            {
-                case true:
-                    mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Muted.ico", UriKind.RelativeOrAbsolute));
-                    break;
-
-                case false:
-                    mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/Unmuted.ico", UriKind.RelativeOrAbsolute));
-                    break;
-            }
-
-            mute_Button.Content = mute_Button_Image;
-
-            Task.Run(async () =>
-            {
-                using StringContent jsonContent = new StringContent(
-                    $"{{\"event\": \"overlay:mute\", \"data\": {{ \"muted\": \"{ALERTS_MUTED}\" }} }}",
-                    Encoding.UTF8,
-                    "application/json");
-
-                using HttpResponseMessage responseMessage = await App.httpClient.PostAsync(string.Format(STREAMELEMENTS_SKIP_MUTE_API, App.se_service.channelId), jsonContent);
-                var jsonResponse = await responseMessage.Content.ReadAsStringAsync();
-
-                Console.WriteLine($"Sent http request : {jsonResponse}");
-            });
-        }
-
 
         /**
          * Loads current state of donations [paused / unpaused, muted / unmuted]
@@ -539,23 +432,25 @@ namespace Streamstats.src.Panels
         {
             Task.Run(async () =>
             {
-                var response = await App.httpClient.GetAsync(string.Format(STREAMELEMENTS_PAUSE_API, App.se_service.channelId));
+                var response = await App.httpClient.GetAsync(string.Format(this.OVERLAY_API, App.se_service.channelId));
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var jsonObject = JsonConvert.DeserializeObject<JObject>(responseContent);
                     Console.WriteLine($"Received state : {responseContent}");
 
-                    ALERTS_PAUSED = (bool)jsonObject["paused"];
-                    ALERTS_MUTED = (bool)jsonObject["muted"];
-
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        pause_Button_Image.Source = new BitmapImage(new Uri("../../Images/" + (this.ALERTS_PAUSED ? "Play_Red.ico" : "Pause.ico"), UriKind.RelativeOrAbsolute));
-                        pause_Button.Content = pause_Button_Image;
+                        this.pause_Button.Tag = (bool)jsonObject["paused"];
+                        this.mute_Button.Tag = (bool)jsonObject["muted"];
 
-                        mute_Button_Image.Source = new BitmapImage(new Uri("../../Images/" + (this.ALERTS_MUTED ? "Muted.ico" : "Unmuted.ico"), UriKind.RelativeOrAbsolute));
-                        mute_Button.Content = mute_Button_Image;
+                        Image? pauseImage = pause_Button.Content as Image;
+                        pauseImage.Source = new BitmapImage(new Uri("../../Images/" + ((bool) this.pause_Button.Tag ? "Play_Red.ico" : "Pause.ico"), UriKind.RelativeOrAbsolute));
+                        pause_Button.Content = pauseImage;
+
+                        Image? muteImage = mute_Button.Content as Image;
+                        muteImage.Source = new BitmapImage(new Uri("../../Images/" + ((bool) this.mute_Button.Tag ? "Muted.ico" : "Unmuted.ico"), UriKind.RelativeOrAbsolute));
+                        mute_Button.Content = muteImage;
                     });
                 }
                 else notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Could not load state", new Thickness(0, 15, 15, 15)));
@@ -574,19 +469,19 @@ namespace Streamstats.src.Panels
                 var document = groupBox.Tag;
                 if (document is Tip tip)
                 {
-                    bool match = tip.user.username.ToLower().Contains(textBox.Text.ToLower()) || tip.message.ToLower().Contains(textBox.Text.ToLower());
+                    bool match = this.IsMatch(new string[] { tip.user.username, tip.message });
                     groupBox.Visibility = match ? Visibility.Visible : Visibility.Collapsed;
                 }
 
                 if (document is Subscription subscription)
                 {
-                    bool match = subscription.user.username.ToLower().Contains(textBox.Text.ToLower()) || subscription.message.ToLower().Contains(textBox.Text.ToLower());
+                    bool match = this.IsMatch(new string[] { subscription.user.username, subscription.message });
                     groupBox.Visibility = match ? Visibility.Visible : Visibility.Collapsed;
                 }
 
                 if (document is Cheer cheer)
                 {
-                    bool match = cheer.user.username.ToLower().Contains(textBox.Text.ToLower()) || cheer.message.ToLower().Contains(textBox.Text.ToLower());
+                    bool match = this.IsMatch(new string[] { cheer.user.username, cheer.message });
                     groupBox.Visibility = match ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
@@ -605,6 +500,13 @@ namespace Streamstats.src.Panels
             if (textBox == null) return;
 
             this.search_Border.BorderBrush = textBox.Text.Length > 0 ? PURPLE : GRAY;
+        }
+
+        private bool IsMatch(string[] check)
+        {
+            if (check[0]?.ToLower().Contains(this.searchBox.Text.ToLower()) ?? false) return true;
+            if (check.Length > 1 && check[1].ToLower().Contains(this.searchBox.Text.ToLower())) return true;
+            return false;
         }
     }
 }

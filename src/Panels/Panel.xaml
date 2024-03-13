@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Streamstats.src.Panels"
+        xmlns:local="clr-namespace:Streamstats.src.Panels"      
         xmlns:UI="clr-namespace:Streamstats.src.UI"
+        xmlns:Buttons="clr-namespace:Streamstats.src.UI.Buttons"
         mc:Ignorable="d"       
         Title="Streamstats" 
         MinHeight="600"
@@ -12,15 +13,15 @@
         Height="950"
         Width="450"
         WindowStartupLocation="CenterScreen">
-
+    
     <Window.Background>
-        <SolidColorBrush Color="#030713"></SolidColorBrush>
+        <SolidColorBrush Color="#030712"></SolidColorBrush>
     </Window.Background>
 
     <Window.Resources>
         <!-- Style for scrollbar's thumb -->
         <Style TargetType="ScrollBar">
-            <Setter Property="Background" Value="#030713" />
+            <Setter Property="Background" Value="#030712" />
             <Setter Property="Width" Value="3" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -90,12 +91,14 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
+        <!-- Background Color -->
+        <SolidColorBrush x:Key="Background" Color="#030712" />
 
-        <UI:PlaceholderTextBox x:Key="PlaceholderTextBox" />
-
+        <UI:BorderBrushConverter x:Key="BorderBrushConverter" />
     </Window.Resources>
 
-    <Grid Background="#030713" Margin="4 4 4 0">
+    <Grid Margin="4 4 4 0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -111,76 +114,61 @@
                    x:Name="top_ControlPanel">
 
             <!-- Pause / Unpause alerts button -->
-            <Border Background="#030713"
-                    BorderBrush="#212936"
+            <Border Background="{DynamicResource Background}"
                     BorderThickness="2"
                     CornerRadius="4">
-                <Button Background="Transparent" 
-                        BorderThickness="0"
-                        Margin="12 0 12 0"
-                        x:Name="pause_Button"
-                        Click="Pause_Button_Click"
-                        Style="{StaticResource button}">
-                    <Image x:Name="pause_Button_Image" 
-                           Source="../../Images/Play_Red.ico" 
-                           Height="20"
-                           Width="20" />
-                </Button>
+                <Border.BorderBrush>
+                    <MultiBinding Converter="{StaticResource BorderBrushConverter}">
+                        <Binding ElementName="pause_Button" Path="IsMouseOver" />
+                        <Binding ElementName="pause_Button" Path="IsPressed" />
+                    </MultiBinding>
+                </Border.BorderBrush>
+                <Buttons:PauseButton x:Name="pause_Button" />
             </Border>
 
             <!-- Skip alerts button -->
-            <Border Background="#030713"
-                    BorderBrush="#212936"
+            <Border Background="{DynamicResource Background}"
                     BorderThickness="2"
                     CornerRadius="4"
                     Margin="10 0 0 0">
-                <Button Background="Transparent" 
-                        BorderThickness="0"
-                        Margin="12 0 12 0"
-                        x:Name="skip_Button"
-                        Click="Skip_Button_Click"
-                        Style="{StaticResource button}">
-                    <Image x:Name="skip_Button_Image"
-                           Source="../../Images/Skip.ico" 
-                           Height="25"
-                           Width="25" />
-                </Button>
+                <Border.BorderBrush>
+                    <MultiBinding Converter="{StaticResource BorderBrushConverter}">
+                        <Binding ElementName="skip_Button" Path="IsMouseOver" />
+                        <Binding ElementName="skip_Button" Path="IsPressed" />
+                    </MultiBinding>
+                </Border.BorderBrush>
+                <Buttons:SkipButton x:Name="skip_Button" />
             </Border>
 
             <!-- Mute / unmute alerts button -->
-            <Border Background="#030713"
-                    BorderBrush="#212936"
+            <Border Background="{DynamicResource Background}"
                     BorderThickness="2"
                     CornerRadius="4"
                     Margin="10 0 0 0">
-                <Button Background="Transparent" 
-                        BorderThickness="0"
-                        Margin="12 0 12 0"
-                        x:Name="mute_Button"
-                        Click="Mute_Button_Click"
-                        Style="{StaticResource button}">
-                    <Image x:Name="mute_Button_Image"
-                           Source="../../Images/Unmuted.ico" 
-                           Height="20"
-                           Width="20" />
-                </Button>
+                <Border.BorderBrush>
+                    <MultiBinding Converter="{StaticResource BorderBrushConverter}">
+                        <Binding ElementName="mute_Button" Path="IsMouseOver" />
+                        <Binding ElementName="mute_Button" Path="IsPressed" />
+                    </MultiBinding>
+                </Border.BorderBrush>
+                <Buttons:MuteButton x:Name="mute_Button" />
             </Border>
 
             <!-- Search field -->
-            <Border Background="#030713"
+            <Border Background="{DynamicResource Background}"
                     BorderBrush="#212936"
                     BorderThickness="2"
                     CornerRadius="4"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     x:Name="search_Border">
-                <UI:PlaceholderTextBox Placeholder="Search"
+                <UI:PlaceholderTextBox x:Name="searchBox" 
+                                       Placeholder="Search"
                                        Foreground="FloralWhite"
                                        Background="Transparent"
-                                       Margin="7 5 7 5" 
+                                       Margin="7 5 7 5"
                                        BorderThickness="0"
-                                       Height="Auto" 
-                                       x:Name="searchBox"
+                                       Height="Auto"
                                        TextChanged="searchBox_TextChanged"
                                        MouseEnter="searchBox_MouseEnter"
                                        MouseLeave="searchBox_MouseLeave"/>

@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -25,8 +26,8 @@ namespace Streamstats.src.Service.UI
         private TextBlock timeAgo_TextBlock;
         private Image replay_Image;
 
-        private Color gold = Color.FromRgb(90, 83, 54);
-        private Color gray = Color.FromRgb(33, 41, 54);
+        private Color gold = Color.FromRgb(250, 204, 21);
+        private Color gray = Color.FromRgb(31, 41, 55);
 
         public TipGroupBox(Tip tip, Category category) 
         {

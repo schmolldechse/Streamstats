@@ -1,17 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SocketIOClient;
-using SocketIO.Core;
-using SocketIOClient.Transport;
 using Streamstats.src.Service.Objects.Types;
 using Streamstats.src.Service.Objects;
-using System.IO.Packaging;
-using System.Windows.Threading;
+using SocketIOClient.Transport;
+using SocketIOClient;
+using SocketIO.Core;
 
 namespace Streamstats.src.Service.Streamelements
 {
@@ -49,7 +42,7 @@ namespace Streamstats.src.Service.Streamelements
             client.On("authenticated", (data) =>
             {
                 dynamic? json = JsonConvert.DeserializeObject(data.ToString());
-                Console.WriteLine($"Connected with streamelements | channelid = {json?[0].channelId}");
+                Console.WriteLine($"Connected with streamelements account with id {json?[0].channelId}");
                 channelId = json[0].channelId;
 
                 callback?.Invoke(true, null);
@@ -102,14 +95,6 @@ namespace Streamstats.src.Service.Streamelements
                 Console.WriteLine($"Failed to reconnect {exception}");
                 callback?.Invoke(false, null);
             };
-
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(10);
-            timer.Tick += (sender, e) =>
-            {
-                Console.WriteLine("still connected : " + client.Connected);
-            };
-            timer.Start();
         }
 
         /**

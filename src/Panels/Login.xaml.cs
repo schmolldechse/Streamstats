@@ -1,9 +1,17 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.TextFormatting;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Streamstats.src.Panels
 {
@@ -33,22 +41,22 @@ namespace Streamstats.src.Panels
 
         private void Button_Login(object sender, RoutedEventArgs e)
         {
-            if (CURRENTLY_LOGGING_IN)
+            if (this.CURRENTLY_LOGGING_IN)
             {
-                notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Already logging in. Please wait.", NOTIFICATION_PANEL_THICKNESS));
+                this.notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Already logging in. Please wait.", NOTIFICATION_PANEL_THICKNESS));
                 return;
             }
 
-            if (textBox_jwtToken.Password.Length <= 0)
+            if (this.textBox_jwtToken.Password.Length <= 0)
             {
-                notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Please enter your credentials", NOTIFICATION_PANEL_THICKNESS));
+                this.notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", "Please enter your credentials", NOTIFICATION_PANEL_THICKNESS));
                 return;
             }
 
-            App.config.jwtToken = textBox_jwtToken.Password;
+            App.config.jwtToken = this.textBox_jwtToken.Password;
             App.config.save();
 
-            connect();
+            this.connect();
         }
 
         private void Paste_Button_Click(object sender, RoutedEventArgs e)
@@ -58,12 +66,12 @@ namespace Streamstats.src.Panels
             string clipboard = Clipboard.GetText();
             this.textBox_jwtToken.Password = clipboard;
 
-            notificationCenter.Children.Add(new src.Notification.Notification(4, "#4CAF50", "#388E3C", "#f5f5f5", "Pasted", NOTIFICATION_PANEL_THICKNESS));
+            this.notificationCenter.Children.Add(new src.Notification.Notification(4, "#4CAF50", "#388E3C", "#f5f5f5", "Pasted", NOTIFICATION_PANEL_THICKNESS));
         }
 
         private async Task connect()
         {
-            CURRENTLY_LOGGING_IN = true;
+            this.CURRENTLY_LOGGING_IN = true;
 
             int tries = 0;
             const int maxTries = 5;
@@ -75,7 +83,7 @@ namespace Streamstats.src.Panels
                 tries++;
 
                 Console.WriteLine($"Trying to connect... Attempt {tries}/{maxTries}");
-                notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", $"Trying to log in.. ({tries}/{maxTries})", NOTIFICATION_PANEL_THICKNESS));
+                this.notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", $"Trying to log in.. ({tries}/{maxTries})", NOTIFICATION_PANEL_THICKNESS));
 
                 await App.se_service.ConnectSocket(
                                (success, data) =>
@@ -85,14 +93,14 @@ namespace Streamstats.src.Panels
                                    if (!connected)
                                    {
                                        Console.WriteLine("Connection attempt failed. Retrying...");
-                                       App.Current.Dispatcher.InvokeAsync(() => notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", $"Attempt {tries} failed", NOTIFICATION_PANEL_THICKNESS)));
+                                       App.Current.Dispatcher.InvokeAsync(() => this.notificationCenter.Children.Add(new src.Notification.Notification(7, "#C80815", "#860111", "#f5f5f5", $"Attempt {tries} failed", NOTIFICATION_PANEL_THICKNESS)));
                                    }
                                });
 
                 if (tries != maxTries) await Task.Delay(2000); // wait for next attempt
             }
 
-            CURRENTLY_LOGGING_IN = false;
+            this.CURRENTLY_LOGGING_IN = false;
 
             if (!connected)
             {

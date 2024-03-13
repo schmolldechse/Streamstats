@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Streamstats.src.Panels"        
         xmlns:UI="clr-namespace:Streamstats.src.UI"
         mc:Ignorable="d"        
         Title="Streamstats"
@@ -11,13 +12,13 @@
         Height="850"
         Width="450"
         WindowStartupLocation="CenterScreen">
-
+    
     <Window.Background>
-        <SolidColorBrush Color="#030713"></SolidColorBrush>
+        <SolidColorBrush Color="#030712"></SolidColorBrush>
     </Window.Background>
 
     <Window.Resources>
-        <SolidColorBrush x:Key="Background" Color="#030713" />
+        <SolidColorBrush x:Key="Background" Color="#030712" />
 
         <SolidColorBrush x:Key="TextColor" Color="FloralWhite" />
         <SolidColorBrush x:Key="BorderColor" Color="#333742" />
@@ -165,7 +166,7 @@
                                 <Binding ElementName="paste_Button" Path="IsPressed" />
                             </MultiBinding>
                         </Border.BorderBrush>
-                        
+
                         <Button Background="Transparent"
                                 x:Name="paste_Button"
                                 Click="Paste_Button_Click"
@@ -175,7 +176,7 @@
                                    Width="20" 
                                    Margin="10 0 10 0"/>
                         </Button>
-                    
+
                     </Border>
                 </Grid>
 

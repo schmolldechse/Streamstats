@@ -25,13 +25,13 @@ namespace Streamstats.src.UI
 
             if (isMouseOver && !isPressed)
             {
-                return PURPLE;
+                return this.PURPLE;
             } else if (isMouseOver && isPressed)
             {
-                return GREEN;
+                return this.GREEN;
             } else
             {
-                return GRAY;
+                return this.GRAY;
             }
         }
 
