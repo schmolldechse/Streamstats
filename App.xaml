@@ -55,5 +55,6 @@
             </Setter>
         </Style>
 
+        <SolidColorBrush x:Key="Background" Color="#030712" />
     </Application.Resources>
 </Application>
